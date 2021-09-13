@@ -16,4 +16,4 @@
 - 각오수정기능
 
 ## ⭐️기술 스택
-HTML, CSS, javascript, Python
+HTML, CSS, javascript, Python, flask
