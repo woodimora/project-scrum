@@ -12,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 client = MongoClient('54.180.123.225', 27017, username="test", password="test")
 db = client.dbscrum
 
-# import pyJWT
+##import pyJWT
 
 SECRET_KEY = 'SCRUM'
 
