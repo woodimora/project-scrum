@@ -112,9 +112,21 @@
         }
 
         .card {
-            width: 300px;
+            width: 350px;
             margin: 30px;
-            float: left;
+        }
+
+        .card:hover {
+            width: 370px;
+            margin: 30px 10px;
+            box-shadow: 3px 3px 3px 3px #000000;
+        }
+
+        #cards-box {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
         }
     </style>
     <script>
