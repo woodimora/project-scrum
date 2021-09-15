@@ -30,6 +30,11 @@ def home():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
+@app.route('/api/board', methods=['GET'])
+def get_board():
+    articles = list(db.boards.find({}, {'_id': False}))
+    users = list(db.users.find({}, {'_id': False}))
+    return jsonify({'all_article': articles, 'all_user': users})
 
 
 @app.route('/boards/form')
