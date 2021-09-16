@@ -43,13 +43,18 @@
             window.location.href = "/login"
         }
 
-        function del(nic) {
+        function del(board_id) {
+            console.log(board_id)
             $.ajax({
                 type: 'POST',
-                url: '/api/delete',
-                data: {memberId_give: nic},
+                url: '/api/boards/delete',
+                data: {
+                    board_id_give: board_id,
+                    member_id_give: '{{ user_info.username }}'
+                },
                 success: function (response) {
                     alert(response['msg']);
+                    window.location.reload()
                 }
             })
         }
@@ -104,20 +109,26 @@
         function get_posts() {
             $.ajax({
                 type: "GET",
-                url: "/api/board",
+                url: "/api/boards/{{ user_info.username }}",
                 data: {},
                 success: function (response) {
-                    let articles = response['all_article']
+                    let articles = response['articles']
                     $('#post-box').empty()
                     for (let i = 0; i < articles.length; i++) {
+                        let boardId = articles[i]['_id']
                         let title = articles[i]['title']
                         let memberId = articles[i]['memberId']
                         let content = articles[i]['content']
-                        let emotion_receive = articles[i]['emotion_receive']
+                        let emotion_receive = articles[i]['emotion']
                         let modifiedDate = articles[i]['modifiedDate']
+                        let emotion_html = '';
+                        if(emotion_receive == 'nice') emotion_html = `<i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>`
+                        else if(emotion_receive == 'normal') emotion_html = `<i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>`
+                        else emotion_html = `<i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>`
+
                         let time_post = new Date(modifiedDate)
                         let time_before = time2str(time_post)
-                        let temp_html = `<article class="media" style="margin: 0px auto 20px auto; padding:20px; width: 800px; background-color:RGBA(92, 188, 218, 0.5); border:solid; border-color: powderblue; border-radius: 40px;">
+                        let temp_html = `<article id="board_id_${boardId}" class="media" style="margin: 0px auto 20px auto; padding:20px; width: 800px; background-color:RGBA(92, 188, 218, 0.5); border:solid; border-color: powderblue; border-radius: 40px;">
                                             <figure class="media-left">
                                                 <p class="image is-64x64">
                                                     <img src="https://bulma.io/images/placeholders/128x128.png">
@@ -128,12 +139,17 @@
                                                     <p>
                                                         <strong>${title}</strong> <small>${memberId}</small> <small>${time_before}</small>
                                                         <br>
-                                                        ${content}${emotion_receive}
+                                                        ${content}
                                                     </p>
                                                 </div>
                                             </div>
+                                            <div class="media-right card_emotion">
+                                                ${emotion_html}
+                                            </div>
                                             <div class="media-right">
-                                                <i onclick="del()" class="fa fa-trash-o" aria-hidden="true"></i>
+                                                <a onclick="del('${boardId}')">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </a>
                                             </div>
                                         </article>`
 
@@ -173,9 +189,9 @@
          style="margin:30px auto 0px auto; min-width: 400px; background-color: white; border-radius:30px; width: 800px; ">
         <article class="media">
             <figure class="media-left" style="align-self: center;">
-                <a class="image is-96x96" href="#">
+                <div class="image is-96x96">
                     <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
-                </a>
+                </div>
             </figure>
             <div class="media-content">
                 <div class="content">

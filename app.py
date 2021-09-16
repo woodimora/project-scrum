@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+from bson import ObjectId
 import jwt
 import hashlib
 import requests
@@ -228,13 +229,22 @@ def save_img():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-    @app.route('/api/delete', methods=['POST'])
-    def delete():
-        memberId_receive = request.form['memberId_give']
-        db.boards.delete_one({'memberId': memberId_receive})
 
-        return jsonify({'msg':'del연결확인!'})
-
+@app.route('/api/boards/delete', methods=['POST'])
+def delete_post():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username_receive = request.form["member_id_give"]
+        if username_receive == payload["id"]:  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+            board_id_receive = ObjectId(request.form['board_id_give'])
+            print(board_id_receive)
+            db.boards.delete_one({'_id': board_id_receive})
+            return jsonify({'msg': '삭제 완료!'})
+        else:
+            return jsonify({'msg': '삭제 실패!'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
 if __name__ == '__main__':
