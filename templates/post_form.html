@@ -58,7 +58,7 @@
         }
 
         .container-item {
-            margin: 15px auto;
+            margin: 0px auto 25px auto;
         }
 
         .board-container {
@@ -72,6 +72,20 @@
         .board-container > #profile_pic {
             width: 200px;
             margin: 0px auto 40px auto;
+        }
+
+        .user_info {
+            text-align: center;
+        }
+
+        .user_info > .name {
+            font-size: 30px;
+            color: white;
+        }
+
+        .user_info > .id {
+            font-size: 20px;
+            color: white;
         }
 
         .board-textarea {
@@ -111,7 +125,6 @@
         }
     </style>
     <script>
-
         $(document).ready(function () {
         })
 
@@ -176,7 +189,7 @@
                 </div>
                 <div class="dropdown-menu" role="menu" aria-hidden="true">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
                         <a onclick="sign_out()" class="dropdown-item">
@@ -201,7 +214,7 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
                         <a onclick="sign_out()" class="dropdown-item">
@@ -223,9 +236,22 @@
 </section>
 <article class="article board-container">
     <figure id="profile_pic" class="image">
-        <a href="/profile">
-            <img class="is-rounded" src="{{url_for('static', filename='profile_pics/profile_placeholder.png')}}">
+        <a href="/user/{{ user_info.username }}">
+            {% if user_info.profile_pic == "" %}
+                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+            {% else %}
+                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic) }}">
+            {% endif %}
         </a>
+        <div class="user_info">
+            <span class="name">
+                {{ user_info.profile_name }}
+            </span>
+            <br>
+            <span class="id">
+                @{{ user_info.username }}
+            </span>
+        </div>
     </figure>
     <input id="title" class="input is-rounded is-medium container-item" type="text" placeholder="제목을 입력하세요.">
     <textarea id="content" class="textarea is-medium container-item board-textarea" placeholder="오늘의 각오를 작성하세요."

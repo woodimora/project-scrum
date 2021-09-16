@@ -52,26 +52,34 @@ def view_post_form():
 # 게시글 작성
 @app.route('/api/boards/add', methods=['POST'])
 def post_board():
-    print(request.form)
-    member_id_receive = request.form['member_id_give']
-    title_receive = request.form['title_give']
-    content_receive = request.form['content_give']
-    emotion_receive = request.form['emotion_give']
-    today = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    print(today)
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})
+        print(request.form)
+        member_id = user_info['username']
+        title_receive = request.form['title_give']
+        content_receive = request.form['content_give']
+        emotion_receive = request.form['emotion_give']
+        today = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        print(today)
 
-    print( member_id_receive, title_receive, content_receive, emotion_receive, today)
+        print( member_id, title_receive, content_receive, emotion_receive, today)
 
-    doc = {
-        'memberId':member_id_receive,
-        'title':title_receive,
-        'content':content_receive,
-        'emotion':emotion_receive,
-        'createDate':today,
-        'modifiedDate':today,
-    }
-    db.boards.insert_one(doc);
-    return jsonify({'result': 'success', 'msg':'저장이 완료되었습니다.'})
+        doc = {
+            'memberId':member_id,
+            'title':title_receive,
+            'content':content_receive,
+            'emotion':emotion_receive,
+            'createDate':today,
+            'modifiedDate':today,
+        }
+        db.boards.insert_one(doc);
+        return jsonify({'result': 'success', 'msg':'저장이 완료되었습니다.'})
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 세션이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 @app.route('/login')
 def login():
