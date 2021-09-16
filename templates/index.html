@@ -146,9 +146,6 @@
             display: block;
         }
 
-        .subtitle {
-            margin-left: 20px;
-        }
     </style>
     <script>
         $(document).ready(function () {
@@ -164,9 +161,9 @@
             }
         }
 
-        let normal_html = `<i class="fa fa-meh-o fa-5x" aria-hidden="true"></i>`
-        let nice_html = `<i class="fa fa-smile-o fa-5x" aria-hidden="true"></i>`
-        let bad_html = `<i class="fa fa-frown-o fa-5x" aria-hidden="true"></i>`
+        let normal_html = `<i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>`
+        let nice_html = `<i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>`
+        let bad_html = `<i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>`
 
         function emotion(emotion_receive) {
             if (emotion_receive == 'bad') {
@@ -188,7 +185,7 @@
                     success: function (response) {
                         let articles = response['all_article']
                         for (let i = 0; i < articles.length; i++) {
-                            if (i < 8) {
+                            if (i < 6) {
                                 console.log(articles)
                                 let title = articles[i]['title']
                                 let memberId = articles[i]['memberId']
@@ -198,13 +195,15 @@
 
                                 let temp_html = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
+
+                                                <p class="content">${emotion(emotion_receive)}</p>
                                                 <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
                                                 <h5 class="title is-4">${title}</h5>
                                                 <p class="subtitle is-6">${memberId}</p>
-                                                <p class="content">${content} ${emotion(emotion_receive)}</p>
+                                                <p class="content">${content}</p>
                                                 <p class="save-date content">${modifiedDate}</p>
                                             </div>
                                         </div>`
@@ -220,16 +219,16 @@
                                             let emotion_receive = articles[i]['emotion_receive']
                                             let modifiedDate = articles[i]['modifiedDate']
                                             let addContent = document.createElement("div");
-                                            addContent.classList.add("card-columns")
                                             addContent.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
+                                                <p class="content"> ${emotion(emotion_receive)}</p>
                                                 <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
                                                 <h5 class="title is-4">${title}</h5>
                                                 <p class="subtitle is-6">${memberId}</p>
-                                                <p class="content">${content} ${emotion(emotion_receive)}</p>
+                                                <p class="content">${content}</p>
                                                 <p class="save-date content">${modifiedDate}</p>
                                             </div>
                                         </div>`
@@ -306,7 +305,7 @@
     </div>
 </nav>
 <section>
-    <div class="card-columns" id="cards-box"></div>
+    <div id="cards-box"></div>
 </section>
 </body>
 </html>
