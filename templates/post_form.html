@@ -7,14 +7,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-{#    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">#}
-{#    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">#}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <meta property="og:title" content="스크럼"/>
     <meta property="og:description" content="mini project for Web Plus"/>
-{#    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>#}
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-{#    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">#}
+    {#    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">#}
 
     <!-- Font Awesome CSS -->
 
@@ -24,7 +24,7 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-{#    <script src="{{ url_for('static', filename='myjs.js') }}"></script>#}
+    {#    <script src="{{ url_for('static', filename='myjs.js') }}"></script>#}
     <script>
 
     </script>
@@ -126,7 +126,17 @@
     </style>
     <script>
         $(document).ready(function () {
+            cookie_check()
         })
+
+        function cookie_check() {
+            let cookie = $.cookie('mytoken');
+            if (cookie == null) {
+                alert('로그인 정보가 존재하지 않습니다.')
+                window.location.replace("/login")
+            }
+        }
+
 
         function post_board() {
             let emotion = $('input[name=emotion-radio]:checked').val()
@@ -147,7 +157,6 @@
             }
 
             let form_data = new FormData()
-            form_data.append("member_id_give", 'member1')
             form_data.append("title_give", title)
             form_data.append("content_give", content)
             form_data.append("emotion_give", emotion)
@@ -162,6 +171,7 @@
                 success: function (response) {
                     if (response["result"] == "success") {
                         alert(response['msg'])
+                        window.localStorage.setItem('post_state', 'posted')
                         window.location.href = "/"
                     }
                 }
@@ -173,13 +183,21 @@
             alert('로그아웃!')
             window.location.href = "/login"
         }
+
+        function home() {
+            if (window.localStorage.getItem('post_state') == 'posted') {
+                window.location.href = "/"
+            } else {
+                alert("오늘의 각오를 작성해주세요!")
+            }
+        }
     </script>
 
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+        <a class="navbar-item" onclick="home()">
             <span class="logo">SCRUM!</span>
         </a>
         <div class="navbar-burger">
@@ -245,7 +263,7 @@
         </a>
         <div class="user_info">
             <span class="name">
-                {{ user_info.profile_name }}
+                {{ user_info.nickname }}
             </span>
             <br>
             <span class="id">
