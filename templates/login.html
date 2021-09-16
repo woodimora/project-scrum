@@ -77,7 +77,7 @@
             let password = $("#input-password").val()
 
             if (username == "") {
-                $("#help-id-login").text("아이디를 입력해주세요.")
+                $("#help-id-login").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
                 $("#input-username").focus()
                 return;
             } else {
@@ -85,7 +85,7 @@
             }
 
             if (password == "") {
-                $("#help-password-login").text("비밀번호를 입력해주세요.")
+                $("#help-password-login").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
                 $("#input-password").focus()
                 return;
             } else {
@@ -204,7 +204,8 @@
             $("#help-email").toggleClass("is-hidden")
             $("#help-profile_info").toggleClass("is-hidden")
             $("#help-nickname").toggleClass("is-hidden")
-            $("#btn-check-dup_nick").toggleClass("is-hidden")
+            $("#help-id-login").toggleClass("is-hidden")
+            $("#help-password-login").toggleClass("is-hidden")
         }
 
 
@@ -357,6 +358,7 @@
                             <p id="help-password" class="help is-hidden">영문과 숫자 조합의 8-20자의 비밀번호를 설정해주세요. 특수문자(!@#$%^&*)도
                                 사용
                                 가능합니다.</p>
+                            <p id="help-password-login" class="help is-danger"></p>
                         </div>
                     </div>
                     <div id="div-sign-in-or-up" class="has-text-centered">
