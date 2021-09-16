@@ -36,26 +36,20 @@ def get_board():
     users = list(db.users.find({}, {'_id': False}))
     return jsonify({'all_article': articles, 'all_user': users})
 
-
+# 게시글 양식
 @app.route('/boards/form')
 def view_post_form():
-    today = datetime.now().strftime("%Y.%m.%d")
-    print(today)
-    return render_template('post_form.html', today=today)
-# API 역할을 하는 부분
+    token_receive = request.cookies.get('mytoken')
+    try:
+        today = datetime.now().strftime("%Y.%m.%d")
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})
+        print(user_info)
+        return render_template('post_form.html', today=today, user_info=user_info)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
 # 게시글 작성
-# JWT 사용 함수
-# @app.route('/api/board', methods=['POST'])
-# def post_board():
-# jwt 로드
-# token_receive = request.cookies.get('mytoken')
-# try:
-#     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
-# return jsonify({'result': 'success'})
-# except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-#     return redirect(url_for("home"))
-
 @app.route('/api/boards/add', methods=['POST'])
 def post_board():
     print(request.form)

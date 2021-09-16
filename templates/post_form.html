@@ -7,14 +7,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{#    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">#}
+{#    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">#}
     <meta property="og:title" content="스크럼"/>
     <meta property="og:description" content="mini project for Web Plus"/>
-    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+{#    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>#}
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+{#    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">#}
 
     <!-- Font Awesome CSS -->
 
@@ -24,7 +24,7 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='myjs.js') }}"></script>#}
     <script>
 
     </script>
@@ -42,7 +42,8 @@
         .navbar-burger {
             margin: auto 10px 10px auto;
         }
-        .navbar-burger:hover{
+
+        .navbar-burger:hover {
             cursor: unset;
             background-color: unset;
         }
@@ -153,6 +154,12 @@
                 }
             });
         }
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
     </script>
 
 </head>
@@ -172,7 +179,7 @@
                         <a class="dropdown-item" href="/profile">
                             Profile
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a onclick="sign_out()" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -197,7 +204,7 @@
                         <a class="dropdown-item" href="/profile">
                             Profile
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a onclick="sign_out()" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -249,9 +256,3 @@
     </div>
 </article>
 </body>
-</html></title>
-</head>
-<body>
-
-</body>
-</html>
