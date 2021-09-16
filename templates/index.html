@@ -162,7 +162,7 @@
                     success: function (response) {
                         let articles = response['all_article']
                         for (let i = 0; i < articles.length; i++) {
-                            if (i < 4) {
+                            if (i < 12) {
                                 console.log(articles)
                                 let title = articles[i]['title']
                                 let memberId = articles[i]['memberId']
@@ -209,9 +209,8 @@
                                         </div>`
                                             document.getElementById('cards-box').appendChild(addContent);
                                         }, 1000)
-                                        i++
+                                        i = i+1;
                                     }
-
                                 });
                             }
                         }
