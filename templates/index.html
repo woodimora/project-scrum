@@ -115,27 +115,23 @@
             color: blue;
         }
 
-        .card-columns  {
+        .card-columns {
             min-width: 350px;
             width: 26%;
             margin: 30px;
             min-height: 300px;
             height: 40vh;
-            border-radius: 20px;
+            border-radius: 10px;
         }
 
         .card-columns:hover {
-            min-width: 355px;
-            width: 27%;
+            min-width: 350px;
+            width: 26%;
             margin: 30px;
-            box-shadow: 3px 3px 3px 3px #000000;
-            border-radius: 30px;
+            box-shadow: 3px 2px 3px 3px #ffdbdb;
+            border-radius: 10px;
             min-height: 300px;
             height: 39vh;
-        }
-
-        .card{
-           border-radius: 30px;
         }
 
         #cards-box {
@@ -154,6 +150,65 @@
             display: block;
         }
 
+        .top {
+            background-color: #00e4ff;
+            display: inline;
+        }
+
+
+        .wave {
+            opacity: .4;
+            position: absolute;
+            top: 3%;
+            left: 50%;
+            background: #34fff5;
+            width: 500px;
+            height: 500px;
+            margin-left: -250px;
+            margin-top: -350px;
+            transform-origin: 50% 48%;
+            border-radius: 43%;
+            animation: drift 3000ms infinite linear;
+        }
+
+        .wave.-three {
+            animation: drift 5000ms infinite linear;
+            background: #fffecf;
+        }
+
+        .wave.-two {
+            animation: drift 7000ms infinite linear;
+            opacity: .1;
+            background: #ff63e7;
+        }
+
+        @keyframes drift {
+            from {
+                transform: rotate(0deg);
+            }
+            from {
+                transform: rotate(360deg);
+            }
+        }
+
+        .box {
+            box-shadow: 0 2px 30px rgba(black, .2);
+            background-color: #fff3f3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box:after {
+            content: '';
+            display: block;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: pink;
+            z-index: 11;
+            transform: translate3d(0, 0, 0);
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -202,16 +257,21 @@
                                 let modifiedDate = articles[i]['modifiedDate']
                                 let temp_html = document.createElement("div");
                                 temp_html.classList.add("card-columns")
-                                temp_html.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
-                                            <div class="card-content">
-
+                                temp_html.innerHTML = `<div class="box">
+                                            <div class=" card-content">
+                                            <div class='wave -one'></div>
+                                            <div class='wave -two'></div>
+                                            <div class='wave -three'></div>
                                                 <p class="content">${emotion(emotion_receive)}</p>
+                                           <div class="top">
                                                 <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
+</div>
                                                 <h5 class="title is-4">${title}</h5>
                                                 <p class="subtitle is-6">${memberId}</p>
+
                                                 <p class="content">${content}</p>
                                                 <p class="save-date content">${modifiedDate}</p>
                                             </div>
@@ -229,13 +289,18 @@
                                             let modifiedDate = articles[i]['modifiedDate']
                                             let addContent = document.createElement("div");
                                             addContent.classList.add("card-columns")
-                                            addContent.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
+                                            addContent.innerHTML = `<div class="box">
                                             <div class="card-content">
+<div class='wave -one'></div>
+                                            <div class='wave -two'></div>
+                                            <div class='wave -three'></div>
                                                 <p class="content"> ${emotion(emotion_receive)}</p>
-                                                <a class="image is-64x64" href="/user/${memberId}">
+<div class="top">
+<a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
+</div>
                                                 <h5 class="title is-4">${title}</h5>
                                                 <p class="subtitle is-6">${memberId}</p>
                                                 <p class="content">${content}</p>
