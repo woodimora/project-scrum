@@ -118,6 +118,20 @@ def user(username):
         return redirect(url_for("home"))
 
 
+@app.route('/api/boards/<username>')
+def get_user_post(username):
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        posts = list(db.boards.find({"memberId": username}).sort("modifiedDate", -1))
+        for post in posts:
+            post["_id"] = str(post["_id"])
+        return jsonify({'status': status, 'articles': posts})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인

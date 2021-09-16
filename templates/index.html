@@ -38,6 +38,9 @@
             background-color: powderblue;
             min-height: 100vh;
             padding-bottom: 1rem;
+        }
+
+        body > section {
             text-align: center;
         }
 
@@ -147,12 +150,21 @@
     </style>
     <script>
         $(document).ready(function () {
+            cookie_check()
             listing()
         })
 
-        let normal_html= `<i class="fa fa-meh-o fa-5x" aria-hidden="true"></i>`
+        function cookie_check() {
+            let cookie = $.cookie('mytoken');
+            if (cookie == null) {
+                alert('로그인 정보가 존재하지 않습니다.')
+                window.location.replace("/login")
+            }
+        }
+
+        let normal_html = `<i class="fa fa-meh-o fa-5x" aria-hidden="true"></i>`
         let nice_html = `<i class="fa fa-smile-o fa-5x" aria-hidden="true"></i>`
-        let bad_html  = `<i class="fa fa-frown-o fa-5x" aria-hidden="true"></i>`
+        let bad_html = `<i class="fa fa-frown-o fa-5x" aria-hidden="true"></i>`
 
         function emotion(emotion_receive) {
             if (emotion_receive != 'bad') {
@@ -184,7 +196,7 @@
 
                                 let temp_html = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
-                                                <a class="image is-64x64" href="#">
+                                                <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
@@ -209,7 +221,7 @@
                                             addContent.classList.add("card-columns")
                                             addContent.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
-                                                <a class="image is-64x64" href="#">
+                                                <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
@@ -231,7 +243,11 @@
             )
         }
 
-
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
     </script>
 
 </head>
@@ -248,13 +264,13 @@
                 </div>
                 <div class="dropdown-menu" role="menu" aria-hidden="true">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
                         <a href="/boards/form" class="dropdown-item">
                             각오쓰기
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item" onclick="sign_out()">
                             Logout
                         </a>
                     </div>
@@ -272,13 +288,13 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
                         <a href="/boards/form" class="dropdown-item">
                             각오쓰기
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item" onclick="sign_out()">
                             Logout
                         </a>
                     </div>

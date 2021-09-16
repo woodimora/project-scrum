@@ -25,9 +25,10 @@
     <script>
         $(document).ready(function () {
             cookie_check()
-			get_posts();
+            get_posts();
         })
-		function cookie_check() {
+
+        function cookie_check() {
             let cookie = $.cookie('mytoken');
             if (cookie == null) {
                 alert('로그인 정보가 존재하지 않습니다.')
@@ -44,9 +45,9 @@
 
         function del(nic) {
             $.ajax({
-                type:'POST',
-                url:'/api/delete',
-                data:{memberId_give:nic},
+                type: 'POST',
+                url: '/api/delete',
+                data: {memberId_give: nic},
                 success: function (response) {
                     alert(response['msg']);
                 }
@@ -83,20 +84,23 @@
         }
 
         function get_posts() {
-
             $.ajax({
                 type: "GET",
-                url: "/api/board",
+                url: `/api/boards/{{ user_info.username }}`,
                 data: {},
                 success: function (response) {
-                    let articles = response['all_article']
+                    let articles = response['articles']
                     $('#post-box').empty()
                     for (let i = 0; i < articles.length; i++) {
                         let title = articles[i]['title']
                         let memberId = articles[i]['memberId']
                         let content = articles[i]['content']
-                        let emotion_receive = articles[i]['emotion_receive']
+                        let emotion_receive = articles[i]['emotion']
                         let modifiedDate = articles[i]['modifiedDate']
+                        let emotion_html = ``
+                        if (emotion_receive == 'nice') emotion_html = '<i class="fa fa-smile-o fa-3x card_emotion" aria-hidden="true"></i>'
+                        else if (emotion_receive == 'normal') emotion_html = '<i class="fa fa-meh-o fa-3x card_emotion" aria-hidden="true"></i>'
+                        else emotion_html = '<i class="fa fa-frown-o fa-3x card_emotion" aria-hidden="true"></i>'
                         let temp_html = `<article class="media" style="margin: 0px auto 20px auto; padding:20px; width: 800px; background-color:powderblue; border:solid; border-color: powderblue; border-radius: 40px;">
                                             <figure class="media-left">
                                                 <p class="image is-64x64">
@@ -108,10 +112,11 @@
                                                     <p>
                                                         <strong>${title}</strong> <small>${memberId}</small> <small>${modifiedDate}</small>
                                                         <br>
-                                                        ${content}${emotion_receive}
+                                                        ${content}
                                                     </p>
                                                 </div>
                                             </div>
+                                            <div class="media-right card_emotion">${emotion_html}</div>
                                             <div class="media-right">
                                                 <i onclick="del()" class="fa fa-trash-o" aria-hidden="true"></i>
                                             </div>
@@ -122,7 +127,8 @@
                 }
             })
         }
-		function home() {
+
+        function home() {
             if (window.localStorage.getItem('post_state') == "posted") {
                 window.location.href = "/"
             } else {
@@ -131,7 +137,9 @@
         }
     </script>
     <style>
-
+        .card_emotion {
+            margin: auto;
+        }
     </style>
 
 </head>
@@ -252,7 +260,8 @@
                 <i onclick="window.location.href='/'" class="fa fa-home" aria-hidden="true"></i>
                 홈 화면으로&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                <i  onclick='$("#modal-edit").addClass("is-active")' class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                <i onclick='$("#modal-edit").addClass("is-active")' class="fa fa-pencil-square-o"
+                   aria-hidden="true"></i>
                 프로필 변경&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                 <i onclick="window.location.href='/boards/form'" class="fa fa-book" aria-hidden="true"></i>
