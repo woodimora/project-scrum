@@ -38,8 +38,11 @@
             background-color: powderblue;
             min-height: 100vh;
             padding-bottom: 1rem;
-            text-align: center;
         }
+		
+		body > section {
+			text-align:center;
+		}
 
         .navbar-burger {
             margin: auto 10px 10px auto;
@@ -147,8 +150,17 @@
     </style>
     <script>
         $(document).ready(function () {
+            cookie_check()
             listing()
         })
+
+        function cookie_check() {
+            let cookie = $.cookie('mytoken');
+            if (cookie == null) {
+                alert('로그인 정보가 존재하지 않습니다.')
+                window.location.replace("/login")
+            }
+        }
 
         function listing() {
             $.ajax({
@@ -168,7 +180,7 @@
 
                                 let temp_html = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
-                                                <a class="image is-64x64" href="#">
+                                                <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
@@ -193,7 +205,7 @@
                                             addContent.classList.add("card-columns")
                                             addContent.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
-                                                <a class="image is-64x64" href="#">
+                                                <a class="image is-64x64" href="/user/${memberId}">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
@@ -215,7 +227,11 @@
             )
         }
 
-
+		function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
     </script>
 
 </head>
@@ -232,10 +248,10 @@
                 </div>
                 <div class="dropdown-menu" role="menu" aria-hidden="true">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item" onclick="sign_out()">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -257,13 +273,13 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/profile">
+                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
                             Profile
                         </a>
                         <a href="/boards/form" class="dropdown-item">
                             각오쓰기
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item" onclick="sign_out()">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
