@@ -128,6 +128,18 @@
             flex-wrap: wrap;
             justify-content: space-around;
         }
+        
+               .image {
+            position: absolute;
+        }
+
+        .title {
+            margin-left: 20px;
+        }
+
+        .subtitle {
+            margin-left: 20px;
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -151,6 +163,10 @@
 
                         let temp_html = `<div class="card card-shadow">
                                             <div class="card-content">
+                                            <a class="image is-64x64" href="#">
+                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
+                                                         alt="Image">
+                                                </a>
                                                 <h5 class="title is-4">${title}</h5>
                                                 <p class="subtitle is-6">${memberId}</p>
                                                 <p class="content">${content} ${emotion_receive}</p>
