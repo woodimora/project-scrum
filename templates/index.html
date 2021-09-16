@@ -38,9 +38,6 @@
             background-color: powderblue;
             min-height: 100vh;
             padding-bottom: 1rem;
-        }
-
-        body > section {
             text-align: center;
         }
 
@@ -74,6 +71,11 @@
             margin: auto;
         }
 
+        .board-container > #profile_pic {
+            width: 200px;
+            margin: 0px auto 40px auto;
+        }
+
         .board-textarea {
             border-radius: 20px;
             min-height: 10vw;
@@ -95,9 +97,26 @@
             margin: auto;
         }
 
+        [type=radio] {
+            height: 0;
+            width: 0;
+            opacity: 0;
+        }
+
+        [type=radio] + label {
+            cursor: pointer;
+            color: white;
+        }
+
+        [type=radio]:checked + label {
+            color: blue;
+        }
+
         .card {
             width: 350px;
             margin: 30px;
+            min-height: 300px;
+            height: 40vh;
         }
 
         .card:hover {
@@ -113,27 +132,13 @@
             justify-content: space-around;
         }
 
-        .section .box {
-            height: 500px;
-            background: red;
-        }
-
-        .section .box p {
-            margin: 0;
-            color: white;
-            padding: 80px 20px;
-        }
-
-        .section .box:nth-child(2n) {
-            background: blue;
-        }
-
         .image {
-            position: absolute;
+    display: inline-block;
+
         }
 
         .title {
-            margin-left: 20px;
+            display: block;
         }
 
         .subtitle {
@@ -142,17 +147,8 @@
     </style>
     <script>
         $(document).ready(function () {
-            cookie_check()
             listing()
         })
-
-        function cookie_check() {
-            let cookie = $.cookie('mytoken');
-            if (cookie == null) {
-                alert('로그인 정보가 존재하지 않습니다.')
-                window.location.replace("/login")
-            }
-        }
 
         function listing() {
             $.ajax({
@@ -162,7 +158,7 @@
                     success: function (response) {
                         let articles = response['all_article']
                         for (let i = 0; i < articles.length; i++) {
-                            if (i < 12) {
+                            if (i < 8) {
                                 console.log(articles)
                                 let title = articles[i]['title']
                                 let memberId = articles[i]['memberId']
@@ -219,12 +215,6 @@
             )
         }
 
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = "/login"
-        }
-
 
     </script>
 
@@ -242,10 +232,10 @@
                 </div>
                 <div class="dropdown-menu" role="menu" aria-hidden="true">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                        <a class="dropdown-item" href="/profile">
                             Profile
                         </a>
-                        <a class="dropdown-item" onclick="sign_out()">
+                        <a href="#" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -267,13 +257,13 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                        <a class="dropdown-item" href="/profile">
                             Profile
                         </a>
                         <a href="/boards/form" class="dropdown-item">
                             각오쓰기
                         </a>
-                        <a class="dropdown-item" onclick="sign_out()">
+                        <a href="#" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
