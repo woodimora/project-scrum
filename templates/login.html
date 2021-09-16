@@ -101,7 +101,6 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         $.cookie('mytoken', response['token'], {path: '/'});
-                        window.location.replace("/")
                         window.location.replace("/boards/form")
                     } else {
                         alert(response['msg'])
@@ -114,8 +113,6 @@
             let username = $("#input-username").val()
             let password = $("#input-password").val()
             let password2 = $("#input-password2").val()
-            console.log(username, password, password2)
-
             let nickname = $("#input-nickname").val()
             let email = $("#input-email").val()
             let profile_info = $("#input-profile_info").val()
@@ -178,7 +175,6 @@
                 url: "/sign_up/save",
                 data: {
                     username_give: username,
-                    password_give: password
                     password_give: password,
                     nickname_give: nickname,
                     email_give: email,
@@ -201,7 +197,7 @@
             $("#help-password2").toggleClass("is-hidden")
         }
 
-        function is_nickname(asValue) {
+
             function is_username(asValue) {
                 var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
                 return regExp.test(asValue);
@@ -230,9 +226,7 @@
                     $("#input-username").focus()
                     return;
                 }
-                if (!is_nickname(username)) {
-                    if (!is_username(username)) {
-                    }
+                if (!is_username(username)) {
                     $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
                     $("#input-username").focus()
                     return;
