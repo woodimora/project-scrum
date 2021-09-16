@@ -38,6 +38,7 @@
             background-color: powderblue;
             min-height: 100vh;
             padding-bottom: 1rem;
+            text-align: center;
         }
 
         .navbar-burger {
@@ -128,8 +129,23 @@
             flex-wrap: wrap;
             justify-content: space-around;
         }
-        
-               .image {
+
+        .section .box {
+            height: 500px;
+            background: red;
+        }
+
+        .section .box p {
+            margin: 0;
+            color: white;
+            padding: 80px 20px;
+        }
+
+        .section .box:nth-child(2n) {
+            background: blue;
+        }
+
+        .image {
             position: absolute;
         }
 
@@ -148,22 +164,23 @@
 
         function listing() {
             $.ajax({
-                type: "GET",
-                url: "/api/board",
-                data: {},
-                success: function (response) {
-                    let articles = response['all_article']
-                    for (let i = 0; i < articles.length; i++) {
-                        console.log(articles)
-                        let title = articles[i]['title']
-                        let memberId = articles[i]['memberId']
-                        let content = articles[i]['content']
-                        let emotion_receive = articles[i]['emotion_receive']
-                        let modifiedDate = articles[i]['modifiedDate']
+                    type: "GET",
+                    url: "/api/board",
+                    data: {},
+                    success: function (response) {
+                        let articles = response['all_article']
+                        for (let i = 0; i < articles.length; i++) {
+                            if (i < 4) {
+                                console.log(articles)
+                                let title = articles[i]['title']
+                                let memberId = articles[i]['memberId']
+                                let content = articles[i]['content']
+                                let emotion_receive = articles[i]['emotion_receive']
+                                let modifiedDate = articles[i]['modifiedDate']
 
-                        let temp_html = `<div class="card card-shadow">
+                                let temp_html = `<div class="card card-shadow menu-item-hover-background-color box">
                                             <div class="card-content">
-                                            <a class="image is-64x64" href="#">
+                                                <a class="image is-64x64" href="#">
                                                 <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
                                                          alt="Image">
                                                 </a>
@@ -174,17 +191,43 @@
                                             </div>
                                         </div>`
 
-                        $('#cards-box').append(temp_html)
+                                $('#cards-box').append(temp_html)
+                            } else {
+                                $(window).scroll(function () {
+                                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                                        setTimeout(function () {
+                                            let title = articles[i]['title']
+                                            let memberId = articles[i]['memberId']
+                                            let content = articles[i]['content']
+                                            let emotion_receive = articles[i]['emotion_receive']
+                                            let modifiedDate = articles[i]['modifiedDate']
+                                            let addContent = document.createElement("div");
+                                            addContent.classList.add("card-columns")
+                                            addContent.innerHTML = `<div class="card card-shadow menu-item-hover-background-color box">
+                                            <div class="card-content">
+                                                <a class="image is-64x64" href="#">
+                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
+                                                         alt="Image">
+                                                </a>
+                                                <h5 class="title is-4">${title}</h5>
+                                                <p class="subtitle is-6">${memberId}</p>
+                                                <p class="content">${content} ${emotion_receive}</p>
+                                                <p class="save-date content">${modifiedDate}</p>
+                                            </div>
+                                        </div>`
+                                            document.getElementById('cards-box').appendChild(addContent);
+                                        }, 1000)
+                                        i++
+                                    }
+
+                                });
+                            }
+                        }
                     }
                 }
-            })
+            )
         }
 
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = "/login"
-        }
 
     </script>
 
@@ -205,7 +248,7 @@
                         <a class="dropdown-item" href="/profile">
                             Profile
                         </a>
-                        <a class="dropdown-item" onclick="sign_out()">
+                        <a href="#" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -233,7 +276,7 @@
                         <a href="/boards/form" class="dropdown-item">
                             각오쓰기
                         </a>
-                        <a class="dropdown-item" onclick="sign_out()">
+                        <a href="#" class="dropdown-item">
                             Logout
                         </a>
                         <hr class="dropdown-divider">
@@ -246,8 +289,8 @@
         </div>
     </div>
 </nav>
-
-<div class="card-columns" id="cards-box"></div>
-
+<section>
+    <div class="card-columns" id="cards-box"></div>
+</section>
 </body>
 </html>
