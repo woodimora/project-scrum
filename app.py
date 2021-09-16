@@ -10,7 +10,8 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-client = MongoClient('54.180.150.139', 27017, username="test", password="test")
+# client = MongoClient('54.180.123.225', 27017, username="test", password="test")
+client = MongoClient('localhost', 27017)
 db = client.dbscrum
 
 ##import pyJWT
@@ -24,18 +25,21 @@ def home():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})
 
-        return render_template('index.html')
+        return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
 
 @app.route('/api/board', methods=['GET'])
 def get_board():
     articles = list(db.boards.find({}, {'_id': False}))
     users = list(db.users.find({}, {'_id': False}))
     return jsonify({'all_article': articles, 'all_user': users})
+
 
 # 게시글 양식
 @app.route('/boards/form')
@@ -45,10 +49,11 @@ def view_post_form():
         today = datetime.now().strftime("%Y.%m.%d")
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload["id"]})
-        print(user_info)
+        # print(user_info)
         return render_template('post_form.html', today=today, user_info=user_info)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
 
 # 게시글 작성
 @app.route('/api/boards/add', methods=['POST'])
@@ -57,30 +62,41 @@ def post_board():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload["id"]})
-        print(request.form)
+        # print(request.form)
         member_id = user_info['username']
         title_receive = request.form['title_give']
         content_receive = request.form['content_give']
         emotion_receive = request.form['emotion_give']
-        today = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        print(today)
+        today = datetime.now().isoformat()
+        # print(today)
 
-        print( member_id, title_receive, content_receive, emotion_receive, today)
-
+        # print( member_id, title_receive, content_receive, emotion_receive, today)
         doc = {
-            'memberId':member_id,
-            'title':title_receive,
-            'content':content_receive,
-            'emotion':emotion_receive,
-            'createDate':today,
-            'modifiedDate':today,
+            'memberId': member_id,
+            'title': title_receive,
+            'content': content_receive,
+            'emotion': emotion_receive,
+            'createDate': today,
+            'modifiedDate': today,
         }
         db.boards.insert_one(doc);
-        return jsonify({'result': 'success', 'msg':'저장이 완료되었습니다.'})
+        return jsonify({'result': 'success', 'msg': '저장이 완료되었습니다.'})
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 세션이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+
+# 오늘 날짜 게시물 있는지 확인
+def check_today(member_id):
+    today = datetime.now().date().isoformat()
+    # print(today)
+    boards = list(db.boards.find({'memberId': member_id, 'createDate': {'$gte': today}}))
+    if len(boards) > 0:
+        return True
+    else:
+        return False
+
 
 @app.route('/login')
 def login():
@@ -111,14 +127,18 @@ def sign_in():
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
 
+    if check_today(username_receive):
+        status = 'posted'
+    else:
+        status = 'not_yet'
     if result is not None:
         payload = {
-         'id': username_receive,
-         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 3)  # 로그인 3시간 유지
+            'id': username_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 3)  # 로그인 3시간 유지
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
-        return jsonify({'result': 'success', 'token': token})
+        return jsonify({'result': 'success', 'token': token, 'post_state': status})
     # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
@@ -139,8 +159,8 @@ def sign_up():
         "nickname": nickname_receive,                               # 닉네임
         "profile_pic": "",                                          # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png", # 프로필 사진 기본 이미지
-        "profile_info": profile_info_receive,  # 프로필 소개글
-        "email": email_receive  # 이메일
+        "profile_info": profile_info_receive,                       # 프로필 소개글
+        "email": email_receive                                      # 이메일
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
@@ -151,6 +171,7 @@ def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
+
 
 @app.route('/sign_up/check_dup_nick', methods=['POST'])
 def check_dup_nick():
