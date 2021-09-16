@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import jwt
 import hashlib
+import requests
 
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
@@ -9,7 +10,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-client = MongoClient('54.180.123.225', 27017, username="test", password="test")
+client = MongoClient('54.180.150.139', 27017, username="test", password="test")
 db = client.dbscrum
 
 ##import pyJWT
@@ -156,6 +157,50 @@ def check_dup_nick():
     nickname_receive = request.form['nickname_give']
     exists = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'exists': exists})
+
+@app.route('/user')
+def detail():
+    r = requests.get('/api/board')
+    response = r.json()
+    article = response['all_article']
+    return render_template('user.html', article=article)
+
+
+@app.route('/update_profile', methods=['POST'])
+def save_img():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        email_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {
+            "profile_name": name_receive,
+            "profile_info": about_receive,
+            "profile_info": email_receive
+        }
+        if 'file_give' in request.files:
+            file = request.files["file_give"]
+            # filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/"+file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+        db.users.update_one({'username': payload['id']}, {'$set':new_doc})
+        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+    @app.route('/api/delete', methods=['POST'])
+    def delete():
+        memberId_receive = request.form['memberId_give']
+        db.boards.delete_one({'memberId': memberId_receive})
+
+        return jsonify({'msg':'del연결확인!'})
+
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
