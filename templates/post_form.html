@@ -36,26 +36,33 @@
     <style>
         .logo {
             font-size: 30px;
+            margin: auto 0 auto 15px;
+            font-family: 'Luckiest Guy', cursive;
+            color: #5cbcda;
+            cursor: pointer;
         }
 
         body {
             background-color: RGBA(92, 188, 218, 0.5);
+            min-width: 300px;
             min-height: 100vh;
-            padding-bottom: 1rem;
+            padding-bottom: 1vh;
         }
 
-        .navbar-burger {
-            margin: auto 10px 10px auto;
+        .navbar-item {
+            margin-left: auto;
+            float: right;
         }
 
-        .navbar-burger:hover {
-            cursor: unset;
-            background-color: unset;
+
+        .content-top {
+            padding-top: 3vh;
+            padding-bottom: 3vh;
         }
 
         .main-title {
             height: 10%;
-            font-size: 80px;
+            font-size: 5vh;
             font-weight: bold;
             color: white;
             margin: auto;
@@ -64,57 +71,69 @@
         }
 
         .container-item {
-            margin: 0px auto 25px auto;
+            margin: 1vh auto 1vh auto;
         }
 
         .board-container {
-            width: 45%;
-            max-width: 800px;
-            min-width: 400px;
-            min-height: 50vw;
+            width: 50vw;
+            min-width: 250px;
+            max-width: 50vh;
             margin: auto;
         }
 
-        .board-container > #profile_pic {
-            width: 200px;
-            margin: 0px auto 40px auto;
+        .user_info_div {
+            max-width: 50vh;
+            margin: 0px auto 10px auto;
+            width: fit-content;
+        }
+
+        .profile_pic {
+            max-width: 20vh;
+            width: 10vh;
+            margin: auto;
         }
 
         .user_info {
+            width: fit-content;
             text-align: center;
+            margin: auto;
         }
 
         .user_info > .name {
-            font-size: 30px;
+            font-size: min(max(16px, 4vh), 25px);
             color: white;
         }
 
         .user_info > .id {
-            font-size: 20px;
+            font-size: min(max(12px, 3vh), 22px);
             color: white;
+        }
+
+        .board-title {
+
         }
 
         .board-textarea {
             border-radius: 20px;
-            min-height: 10vw;
-            max-height: 40vw;
-            height: 100%;
+            min-height: 10vh;
+            height: 30vh;
         }
 
         .board-button {
-            min-width: 300px;
-            width: 60%;
-            margin: 30px auto;
+            margin-top: 2vh;
         }
 
-        .board-button > button {
+        .button-custom {
             background-color: #5cbcda;
             color: white;
+            display: block;
+            margin: auto;
+            width: 10vw;
+            min-width: 90px;
         }
 
         .emotion {
             width: 60%;
-            min-width: 225px;
             display: flex;
             justify-content: space-between;
             margin: auto;
@@ -126,14 +145,23 @@
             opacity: 0;
         }
 
-        [type=radio] + label {
+        .emotion > label * {
             cursor: pointer;
             color: white;
         }
 
-        [type=radio]:checked + label {
-            color: blue;
+        .nice-label > input:checked + i {
+            color: green;
         }
+
+        .normal-label > input:checked + i {
+            color: coral;
+        }
+
+        .bad-label > input:checked + i {
+            color: red;
+        }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -206,64 +234,38 @@
 
 </head>
 <body>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" onclick="home()">
-            <span class="logo">SCRUM!</span>
-        </a>
-        <div class="navbar-burger">
-            <div class="navbar-item dropdown is-right is-hoverable ">
-                <div class="dropdown-trigger">
-                    <i class="fa fa-user fa-3x" aria-hidden="true" onclick=""></i>
-                </div>
-                <div class="dropdown-menu" role="menu" aria-hidden="true">
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
-                            Profile
-                        </a>
-                        <a onclick="sign_out()" class="dropdown-item">
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
+<nav class="navbar" role="navigation">
+    <span class="logo" onclick="home()">SCRUM!</span>
+    <div class="navbar-item dropdown is-right is-hoverable">
+        <div class="dropdown-trigger">
+            <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
         </div>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-        </div>
-        <div class="navbar-end">
-            <div class="navbar-item dropdown is-right is-hoverable">
-                <div class="dropdown-trigger">
-                    <i class="fa fa-user fa-3x" aria-hidden="true" onclick=""></i>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
-                            Profile
-                        </a>
-                        <a onclick="sign_out()" class="dropdown-item">
-                            Logout
-                        </a>
-                    </div>
-                </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+                <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                    프로필
+                </a>
+                <a class="dropdown-item" onclick="sign_out()" style="color: red">
+                    로그아웃
+                </a>
             </div>
         </div>
     </div>
 </nav>
-<section class="section is-small">
+<section class="section is-small content-top">
     <div class="main-title">{{ today }}</div>
     <div class="main-title">SCRUM!</div>
 </section>
 <article class="article board-container">
-    <figure id="profile_pic" class="image">
-        <a href="/user/{{ user_info.username }}">
+    <a class="image user_info_div" href="/user/{{ user_info.username }}">
+        <div class="profile_pic">
             {% if user_info.profile_pic == "" %}
                 <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
             {% else %}
                 <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic) }}">
             {% endif %}
-        </a>
+        </div>
+
         <div class="user_info">
             <span class="name">
                 {{ user_info.nickname }}
@@ -273,32 +275,26 @@
                 @{{ user_info.username }}
             </span>
         </div>
-    </figure>
-    <input id="title" class="input is-rounded is-medium container-item" type="text" placeholder="제목을 입력하세요.">
-    <textarea id="content" class="textarea is-medium container-item board-textarea" placeholder="오늘의 각오를 작성하세요."
-              rows="10"></textarea>
+    </a>
+
+    <input id="title" class="input is-rounded container-item board-title" type="text" placeholder="제목을 입력하세요.">
+    <textarea id="content" class="textarea container-item board-textarea" placeholder="오늘의 각오를 작성하세요."></textarea>
     <div class="control emotion">
-        <label class="radio">
+        <label class="radio nice-label">
             <input type="radio" name="emotion-radio" id="nice" value="nice">
-            <label for="nice">
-                <i class="fa fa-smile-o fa-5x" aria-hidden="true"></i>
-            </label>
+            <i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>
         </label>
-        <label class="radio">
+        <label class="radio normal-label">
             <input type="radio" name="emotion-radio" id="normal" value="normal">
-            <label for="normal">
-                <i class="fa fa-meh-o fa-5x" aria-hidden="true"></i>
-            </label>
+            <i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>
         </label>
-        <label class="radio">
+        <label class="radio bad-label">
             <input type="radio" name="emotion-radio" id="bad" value="bad">
-            <label for="bad">
-                <i class="fa fa-frown-o fa-5x" aria-hidden="true"></i>
-            </label>
+            <i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>
         </label>
     </div>
     <div class="board-button">
-        <button class="button is-large is-fullwidth" onclick="post_board()" id="post-button">작성하기
+        <button class="button button-custom" onclick="post_board()" id="post-button">작성하기
         </button>
     </div>
 </article>
