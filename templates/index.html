@@ -247,6 +247,24 @@
             }
         }
 
+        function time2str(date) {
+            let today = new Date()
+            let time = (today - date) / 1000 / 60  // 분
+
+            if (time < 60) {
+                return parseInt(time) + "분 전"
+            }
+            time = time / 60  // 시간
+            if (time < 24) {
+                return parseInt(time) + "시간 전"
+            }
+            time = time / 24
+            if (time < 7) {
+                return parseInt(time) + "일 전"
+            }
+            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+        }
+
         function listing() {
             $.ajax({
                     type: "GET",
@@ -263,26 +281,28 @@
                                 let emotion_receive = articles[i]['emotion']
                                 let modifiedDate = articles[i]['modifiedDate']
                                 let temp_html = document.createElement("div");
+                                let time_post = new Date(modifiedDate)
+                                let time_before = time2str(time_post)
                                 temp_html.classList.add("card-columns")
                                 temp_html.innerHTML = `<div class="box">
-                                            <div class=" card-content">
-                                            <div class='wave -one'></div>
-                                            <div class='wave -two'></div>
-                                            <div class='wave -three'></div>
-                                                <p class="content">${emotion(emotion_receive)}</p>
-                                           <div class="top">
-                                                <a class="image is-64x64" href="/user/${memberId}">
-                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
-                                                         alt="Image">
-                                                </a>
-</div>
-                                                <h5 class="title is-4">${title}</h5>
-                                                <p class="subtitle is-6">${memberId}</p>
+                                                            <div class=" card-content">
+                                                            <div class='wave -one'></div>
+                                                            <div class='wave -two'></div>
+                                                            <div class='wave -three'></div>
+                                                                <p class="content">${emotion(emotion_receive)}</p>
+                                                            <div class="top">
+                                                                <a class="image is-64x64" href="/user/${memberId}">
+                                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
+                                                                         alt="Image">
+                                                                </a>
+                                                            </div>
+                                                                <h5 class="title is-4">${title}</h5>
+                                                                <p class="subtitle is-6">${memberId}</p>
 
-                                                <p class="content">${content}</p>
-                                                <p class="save-date content">${modifiedDate}</p>
-                                            </div>
-                                        </div>`
+                                                                <p class="content">${content}</p>
+                                                                <p class="save-date content">${time_before}</p>
+                                                            </div>
+                                                        </div>`
 
                                 $('#cards-box').append(temp_html)
                             } else {
@@ -297,23 +317,23 @@
                                             let addContent = document.createElement("div");
                                             addContent.classList.add("card-columns")
                                             addContent.innerHTML = `<div class="box">
-                                            <div class="card-content">
-<div class='wave -one'></div>
-                                            <div class='wave -two'></div>
-                                            <div class='wave -three'></div>
-                                                <p class="content"> ${emotion(emotion_receive)}</p>
-<div class="top">
-<a class="image is-64x64" href="/user/${memberId}">
-                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
-                                                         alt="Image">
-                                                </a>
-</div>
-                                                <h5 class="title is-4">${title}</h5>
-                                                <p class="subtitle is-6">${memberId}</p>
-                                                <p class="content">${content}</p>
-                                                <p class="save-date content">${modifiedDate}</p>
-                                            </div>
-                                        </div>`
+                                                                        <div class="card-content">
+                                                                        <div class='wave -one'></div>
+                                                                        <div class='wave -two'></div>
+                                                                        <div class='wave -three'></div>
+                                                                            <p class="content"> ${emotion(emotion_receive)}</p>
+                                                                        <div class="top">
+                                                                            <a class="image is-64x64" href="/user/${memberId}">
+                                                                                <img class="is-rounded" src="/static/profile_pics/profile_placeholder.png"
+                                                                                         alt="Image">
+                                                                            </a>
+                                                                        </div>
+                                                                            <h5 class="title is-4">${title}</h5>
+                                                                            <p class="subtitle is-6">${memberId}</p>
+                                                                            <p class="content">${content}</p>
+                                                                            <p class="save-date content">${modifiedDate}</p>
+                                                                        </div>
+                                                                    </div>`
                                             document.getElementById('cards-box').appendChild(addContent);
                                         }, 1000)
                                         i = i + 1;
