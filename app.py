@@ -37,7 +37,7 @@ def home():
 
 @app.route('/api/board', methods=['GET'])
 def get_board():
-    articles = list(db.boards.find({}, {'_id': False}))
+    articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1))
     users = list(db.users.find({}, {'_id': False}))
     return jsonify({'all_article': articles, 'all_user': users})
 
