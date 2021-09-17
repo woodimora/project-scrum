@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="containers">
 <head>
 
     <!-- Webpage Title -->
@@ -45,6 +45,9 @@
             background-color: RGBA(92, 188, 218, 0.5);
             min-height: 100vh;
             padding-bottom: 1rem;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+
         }
 
         body > section {
@@ -199,6 +202,28 @@
             }
         }
 
+        .containers {
+            overflow: auto;
+        }
+
+        .containers::-webkit-scrollbar {
+            width: 15px;
+        }
+
+        .containers::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+
+
+        .container::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+
         .box {
             min-height: 300px;
             height: 42vh;
@@ -223,6 +248,11 @@
             display: block;
             margin: 10px auto;
         }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, .05);
+        }
+
     </style>
     <script>
 
@@ -314,7 +344,7 @@
 
                                 $('#cards-box').append(temp_html)
                             } else {
-                                $(window).scroll(function () {
+                                $(document).scroll(function () {
                                     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                                         setTimeout(function () {
                                             let title = articles[i]['title']
