@@ -38,6 +38,7 @@
             margin: auto 0 auto 15px;
             font-family: 'Luckiest Guy', cursive;
             color: #5cbcda;
+            cursor: pointer;
         }
 
         body {
@@ -330,12 +331,16 @@
             alert('로그아웃!')
             window.location.href = "/login"
         }
+
+        function home() {
+            window.location.href = "/"
+        }
     </script>
 
 </head>
 <body>
 <nav class="navbar" role="navigation">
-        <span class="logo">SCRUM!</span>
+        <span class="logo" onclick="home()">SCRUM!</span>
         <div class="navbar-item dropdown is-right is-hoverable">
             <div class="dropdown-trigger">
                 <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
