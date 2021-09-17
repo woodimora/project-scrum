@@ -12,7 +12,6 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-# client = MongoClient('54.180.123.225', 27017, username="test", password="test")
 client = MongoClient('54.180.150.139', 27017, username="test", password="test")
 # client = MongoClient('localhost', 27017)
 db = client.dbscrum
@@ -60,7 +59,6 @@ def get_boards():
         else:
             more_state = False
 
-        print(now_receive)
         if now_receive == 0:
             articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).limit(20))
 
@@ -68,12 +66,16 @@ def get_boards():
             articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(20))
 
         count = len(articles)
-        print(len(articles))
+        # print(len(articles))
+
         for article in articles:
             member_id = article['memberId']
             user_info = db.users.find_one({'username':member_id}, {'_id': False})
-            article['profile_pic_real'] = user_info["profile_pic_real"]
-            print(article['profile_pic_real'])
+            if user_info is None:
+                article['profile_pic_real'] = "profile_pics/profile_placeholder.png"
+            else:
+                article['profile_pic_real'] = user_info["profile_pic_real"]
+
         return jsonify({'all_article': articles, 'end': now_receive + count ,'count':count, 'state':more_state})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
@@ -281,8 +283,6 @@ def save_img():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1].lower()
             print(extension)
-            if extension not in ['jpg','png','jpeg','gif','bmp','heif','ico']:
-                return jsonify({"result": "fail","msg":"이미지 파일 확장자가 올바르지 않습니다."})
             file_path = f"profile_pics/{username}.{extension}"
             file.save("./static/"+file_path)
             new_doc["profile_pic"] = filename
