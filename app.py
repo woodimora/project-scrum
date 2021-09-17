@@ -4,6 +4,7 @@ from bson import ObjectId
 import jwt
 import hashlib
 import requests
+from werkzeug.utils import secure_filename
 
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
@@ -11,7 +12,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-# client = MongoClient('54.180.123.225', 27017, username="test", password="test")
+client = MongoClient('54.180.150.139', 27017, username="test", password="test")
 client = MongoClient('localhost', 27017)
 db = client.dbscrum
 
@@ -37,7 +38,7 @@ def home():
 
 @app.route('/api/board', methods=['GET'])
 def get_board():
-    articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1))
+    articles = list(db.boards.find({}, {'_id': False}))
     users = list(db.users.find({}, {'_id': False}))
     return jsonify({'all_article': articles, 'all_user': users})
 
@@ -202,6 +203,7 @@ def detail():
     return render_template('user.html', article=article)
 
 
+
 @app.route('/update_profile', methods=['POST'])
 def save_img():
     token_receive = request.cookies.get('mytoken')
@@ -209,22 +211,22 @@ def save_img():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         username = payload["id"]
         name_receive = request.form["name_give"]
-        email_receive = request.form["name_give"]
         about_receive = request.form["about_give"]
+        email_receive = request.form["email_give"]
         new_doc = {
-            "profile_name": name_receive,
+            "nickname": name_receive,
             "profile_info": about_receive,
-            "profile_info": email_receive
+            "email": email_receive
         }
         if 'file_give' in request.files:
             file = request.files["file_give"]
-            # filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"profile_pics/{username}.{extension}"
             file.save("./static/"+file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
-        db.users.update_one({'username': payload['id']}, {'$set':new_doc})
+        db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
