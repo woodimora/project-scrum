@@ -16,6 +16,11 @@
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Luckiest+Guy&family=Source+Code+Pro:ital,wght@0,400;1,900&display=swap"
+          rel="stylesheet">
+
     <!-- Font Awesome CSS -->
 
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
@@ -30,6 +35,9 @@
     <style>
         .logo {
             font-size: 30px;
+            margin: auto 0 auto 15px;
+            font-family: 'Luckiest Guy', cursive;
+            color: #5cbcda;
         }
 
         body {
@@ -42,13 +50,13 @@
             text-align: center;
         }
 
-        .navbar-burger {
-            margin: auto 10px 10px auto;
+        .navbar-item {
+            margin-left: auto;
+            float: right;
         }
 
-        .navbar-burger:hover {
-            cursor: unset;
-            background-color: unset;
+        .navbar {
+
         }
 
         .main-title {
@@ -326,56 +334,26 @@
 
 </head>
 <body>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <span class="logo">SCRUM!</span>
-        </a>
-        <div class="navbar-burger">
-            <div class="navbar-item dropdown is-right is-hoverable ">
-                <div class="dropdown-trigger">
-                    <i class="fa fa-user fa-3x" aria-hidden="true" onclick=""></i>
-                </div>
-                <div class="dropdown-menu" role="menu" aria-hidden="true">
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
-                            프로필
-                        </a>
-                        <a href="/boards/form" class="dropdown-item">
-                            각오쓰기
-                        </a>
-                        <a class="dropdown-item" onclick="sign_out()">
-                            로그아웃
-                        </a>
-                    </div>
+<nav class="navbar" role="navigation">
+        <span class="logo">SCRUM!</span>
+        <div class="navbar-item dropdown is-right is-hoverable">
+            <div class="dropdown-trigger">
+                <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                    <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                        프로필
+                    </a>
+                    <a href="/boards/form" class="dropdown-item">
+                        각오쓰기
+                    </a>
+                    <a class="dropdown-item" onclick="sign_out()">
+                        프로필
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-        </div>
-        <div class="navbar-end">
-            <div class="navbar-item dropdown is-right is-hoverable">
-                <div class="dropdown-trigger">
-                    <i class="fa fa-user fa-3x" aria-hidden="true" onclick=""></i>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="/user/{{ user_info.username }}">
-                            프로필
-                        </a>
-                        <a href="/boards/form" class="dropdown-item">
-                            각오쓰기
-                        </a>
-                        <a class="dropdown-item" onclick="sign_out()">
-                            프로필
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </nav>
 <section>
     <div id="cards-box"></div>
