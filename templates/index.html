@@ -221,15 +221,13 @@
 
         .more-button {
             display: block;
-            margin:10px auto;
+            margin: 10px auto;
         }
     </style>
     <script>
-        let now
 
         $(document).ready(function () {
             listing()
-            now = 0;
         })
 
         function cookie_check() {
@@ -278,34 +276,23 @@
             $.ajax({
                     type: "GET",
                     url: "/api/boards",
-                    data: {
-                        now_give: now
-                    },
+                    data: {},
                     success: function (response) {
                         let articles = response['all_article']
-                        let total_count = response['total_count']
-                        let end = response['end']
-                        let count = response['count']
-                        now = end;
-                        let more_state = response['state']
-                        console.log(count , end , more_state)
-                        if(more_state)
-                            $("#more_button").removeClass("is-hidden")
-                        else
-                            $("#more_button").addClass("is-hidden")
-                        console.log(total_count)
                         for (let i = 0; i < articles.length; i++) {
-                            let title = articles[i]['title']
-                            let memberId = articles[i]['memberId']
-                            let content = articles[i]['content']
-                            let emotion_receive = articles[i]['emotion']
-                            let modifiedDate = articles[i]['modifiedDate']
-                            let temp_html = document.createElement("div");
-                            let time_post = new Date(modifiedDate)
-                            let time_before = time2str(time_post)
-                            let user_profile_pic = articles[i]['profile_pic_real']
-                            temp_html.classList.add("card-columns")
-                            temp_html.innerHTML = `<div class="box">
+                            if (i < 8) {
+                                console.log(articles)
+                                let title = articles[i]['title']
+                                let memberId = articles[i]['memberId']
+                                let content = articles[i]['content']
+                                let emotion_receive = articles[i]['emotion']
+                                let modifiedDate = articles[i]['modifiedDate']
+                                let temp_html = document.createElement("div");
+                                let time_post = new Date(modifiedDate)
+                                let time_before = time2str(time_post)
+                                let user_profile_pic = articles[i]['profile_pic_real']
+                                temp_html.classList.add("card-columns")
+                                temp_html.innerHTML = `<div class="box">
                                                             <div class=" card-content">
                                                             <div class='wave -one'></div>
                                                             <div class='wave -two'></div>
@@ -324,7 +311,47 @@
                                                                 <p class="save-date content">${time_before}</p>
                                                             </div>
                                                         </div>`
-                            $('#cards-box').append(temp_html)
+
+                                $('#cards-box').append(temp_html)
+                            } else {
+                                $(window).scroll(function () {
+                                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                                        setTimeout(function () {
+                                            let title = articles[i]['title']
+                                            let memberId = articles[i]['memberId']
+                                            let content = articles[i]['content']
+                                            let emotion_receive = articles[i]['emotion']
+                                            let modifiedDate = articles[i]['modifiedDate']
+                                            let temp_html = document.createElement("div");
+                                            let time_post = new Date(modifiedDate)
+                                            let time_before = time2str(time_post)
+                                            let user_profile_pic = articles[i]['profile_pic_real']
+                                            temp_html.classList.add("card-columns")
+                                            temp_html.innerHTML = `<div class="box">
+                                                            <div class=" card-content">
+                                                            <div class='wave -one'></div>
+                                                            <div class='wave -two'></div>
+                                                            <div class='wave -three'></div>
+                                                                <p class="content">${emotion(emotion_receive)}</p>
+                                                            <div class="top">
+                                                                <a class="image is-64x64" href="/user/${memberId}">
+                                                                <img class="is-rounded" src="static/${user_profile_pic}"
+                                                                         alt="Image">
+                                                                </a>
+                                                            </div>
+                                                                <h5 class="title is-4">${title}</h5>
+                                                                <p class="subtitle is-6">${memberId}</p>
+
+                                                                <p class="content">${content}</p>
+                                                                <p class="save-date content">${time_before}</p>
+                                                            </div>
+                                                        </div>`
+                                            document.getElementById('cards-box').appendChild(temp_html);
+                                            i = 100;
+                                        }, 2000)
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -368,8 +395,5 @@
 <section>
     <div id="cards-box"></div>
 </section>
-<div>
-    <button onclick="listing()" id="more_button" class="button is-primary is-rounded more-button is-hidden">더보기</button>
-</div>
 </body>
 </html>

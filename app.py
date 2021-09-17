@@ -12,7 +12,6 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-client = MongoClient('54.180.150.139', 27017, username="test", password="test")
 client = MongoClient('localhost', 27017)
 db = client.dbscrum
 
@@ -34,38 +33,6 @@ def home():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-
-
-@app.route('/api/boards', methods=['GET'])
-def get_boards():
-    now_receive = request.args.get('now_give')
-
-    if now_receive is None:
-        now_receive = 0
-    else:
-        now_receive = int(now_receive)
-
-    total_count = db.boards.count_documents({})
-    if total_count > now_receive + 20:
-        more_state = True
-    else:
-        more_state = False
-
-    print(now_receive)
-    if now_receive == 0:
-        articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).limit(20))
-
-    else:
-        articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(20))
-
-    count = len(articles)
-    print(len(articles))
-    for article in articles:
-        member_id = article['memberId']
-        user_info = db.users.find_one({'username':member_id}, {'_id': False})
-        article['profile_pic_real'] = user_info["profile_pic_real"]
-
-    return jsonify({'all_article': articles, 'end': now_receive + count ,'count':count, 'state':more_state})
 
 
 # 게시글 양식
