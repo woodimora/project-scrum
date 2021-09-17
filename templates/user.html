@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Luckiest+Guy&family=Source+Code+Pro:ital,wght@0,400;1,900&display=swap"
+          rel="stylesheet">
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -187,11 +189,32 @@
             if (window.localStorage.getItem('post_state') == "posted") {
                 window.location.href = "/"
             } else {
+                alert("오늘의 각오를 작성해주세요!")
                 window.location.href = "/boards/form"
             }
         }
     </script>
     <style>
+        .logo {
+            font-size: 30px;
+            margin: auto 0 auto 15px;
+            font-family: 'Luckiest Guy', cursive;
+            color: #5cbcda;
+            cursor: pointer;
+        }
+
+        body {
+            background-color: white;
+            min-width: 300px;
+            min-height: 100vh;
+            padding-bottom: 1vh;
+        }
+
+        .navbar-item {
+            margin-left: auto;
+            float: right;
+        }
+
         .modal_box {
             padding: 30px;
             font-size: 50px;
@@ -211,13 +234,8 @@
     </style>
 
 </head>
-<body class="has-navbar-fixed-top">
-<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand" style="height: 64px;">
-        <a class="navbar-item" onclick="home()">
-            <span class=logo style="font-size: 30px;">SCRUM!</span>
-        </a>
-    </div>
+<nav class="navbar" role="navigation">
+    <span class="logo" onclick="home()">SCRUM!</span>
 </nav>
 <section class="hero is-white" style="background-color: RGBA(92, 188, 218, 0.5); ">
     <div class="hero-body"
@@ -322,7 +340,7 @@
 <section class="section"
          style="background-color: RGBA(92, 188, 218, 0.5); text-align: center">
     <p>
-        <a class="feature_button" onclick="window.location.href='/'">
+        <a class="feature_button" onclick="home()">
             <i class="fa fa-home" aria-hidden="true"> 홈 화면으로</i>
         </a>
         {% if status %}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
