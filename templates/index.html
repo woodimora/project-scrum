@@ -128,8 +128,9 @@
             width: 26%;
             margin: 30px;
             min-height: 300px;
-            height: 42vh;
+            {#height: 40vh;#}
             border-radius: 10px;
+            cursor: pointer;
         }
 
         .card-columns:hover {
@@ -139,7 +140,7 @@
             box-shadow: 3px 2px 3px 3px #ffdbdb;
             border-radius: 10px;
             min-height: 300px;
-            height: 42vh;
+            {#height: 40vh;#}
         }
 
         #cards-box {
@@ -200,8 +201,8 @@
         }
 
         .box {
-            min-height: 300px;
-            height: 42vh;
+            min-height: 320px;
+            height: 25vh;
             box-shadow: 0 2px 30px rgba(black, .2);
             background-color: #fff3f3;
             position: relative;
@@ -221,7 +222,15 @@
 
         .more-button {
             display: block;
-            margin:10px auto;
+            margin: 10px auto;
+        }
+
+        a {
+            all: unset;
+        }
+
+        .is-rounded {
+
         }
     </style>
     <script>
@@ -288,8 +297,8 @@
                         let count = response['count']
                         now = end;
                         let more_state = response['state']
-                        console.log(count , end , more_state)
-                        if(more_state)
+                        console.log(count, end, more_state)
+                        if (more_state)
                             $("#more_button").removeClass("is-hidden")
                         else
                             $("#more_button").addClass("is-hidden")
@@ -305,25 +314,24 @@
                             let time_before = time2str(time_post)
                             let user_profile_pic = articles[i]['profile_pic_real']
                             temp_html.classList.add("card-columns")
-                            temp_html.innerHTML = `<div class="box">
-                                                            <div class=" card-content">
+                            temp_html.innerHTML = `<a href="/user/${memberId}"><div class="box">
+                                                            <div class="card-content">
                                                             <div class='wave -one'></div>
                                                             <div class='wave -two'></div>
                                                             <div class='wave -three'></div>
                                                                 <p class="content">${emotion(emotion_receive)}</p>
                                                             <div class="top">
-                                                                <a class="image is-64x64" href="/user/${memberId}">
-                                                                <img class="is-rounded" src="static/${user_profile_pic}"
+                                                                <div class="image is-64x64">
+                                                                <img class="is-rounded" style="width:64px;height: 64px; object-fit: cover;" src="static/${user_profile_pic}"
                                                                          alt="Image">
-                                                                </a>
+                                                                </div>
                                                             </div>
+<p class="subtitle is-6" style="margin-bottom: 30px">${memberId}</p>
                                                                 <h5 class="title is-4">${title}</h5>
-                                                                <p class="subtitle is-6">${memberId}</p>
-
                                                                 <p class="content">${content}</p>
                                                                 <p class="save-date content">${time_before}</p>
                                                             </div>
-                                                        </div>`
+                                                        </div></a>`
                             $('#cards-box').append(temp_html)
                         }
                     }
