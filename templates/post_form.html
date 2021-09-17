@@ -259,11 +259,7 @@
 <article class="article board-container">
     <a class="image user_info_div" href="/user/{{ user_info.username }}">
         <div class="profile_pic">
-            {% if user_info.profile_pic == "" %}
-                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
-            {% else %}
-                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic) }}">
-            {% endif %}
+            <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}"">
         </div>
 
         <div class="user_info">

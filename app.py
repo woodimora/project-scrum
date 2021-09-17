@@ -36,11 +36,36 @@ def home():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
-@app.route('/api/board', methods=['GET'])
-def get_board():
-    articles = list(db.boards.find({}, {'_id': False}))
-    users = list(db.users.find({}, {'_id': False}))
-    return jsonify({'all_article': articles, 'all_user': users})
+@app.route('/api/boards', methods=['GET'])
+def get_boards():
+    now_receive = request.args.get('now_give')
+
+    if now_receive is None:
+        now_receive = 0
+    else:
+        now_receive = int(now_receive)
+
+    total_count = db.boards.count_documents({})
+    if total_count > now_receive + 20:
+        more_state = True
+    else:
+        more_state = False
+
+    print(now_receive)
+    if now_receive == 0:
+        articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).limit(20))
+
+    else:
+        articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(20))
+
+    count = len(articles)
+    print(len(articles))
+    for article in articles:
+        member_id = article['memberId']
+        user_info = db.users.find_one({'username':member_id}, {'_id': False})
+        article['profile_pic_real'] = user_info["profile_pic_real"]
+
+    return jsonify({'all_article': articles, 'end': now_receive + count ,'count':count, 'state':more_state})
 
 
 # 게시글 양식
