@@ -127,7 +127,7 @@
             width: 26%;
             margin: 30px;
             min-height: 300px;
-            height: 40vh;
+            height: 42vh;
             border-radius: 10px;
         }
 
@@ -138,7 +138,7 @@
             box-shadow: 3px 2px 3px 3px #ffdbdb;
             border-radius: 10px;
             min-height: 300px;
-            height: 39vh;
+            height: 40vh;
         }
 
         #cards-box {
@@ -199,6 +199,8 @@
         }
 
         .box {
+            min-height: 300px;
+            height: 42vh;
             box-shadow: 0 2px 30px rgba(black, .2);
             background-color: #fff3f3;
             position: relative;
@@ -212,7 +214,6 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: pink;
             z-index: 11;
             transform: translate3d(0, 0, 0);
         }
@@ -360,25 +361,25 @@
 </head>
 <body>
 <nav class="navbar" role="navigation">
-        <span class="logo" onclick="home()">SCRUM!</span>
-        <div class="navbar-item dropdown is-right is-hoverable">
-            <div class="dropdown-trigger">
-                <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                    <a class="dropdown-item" href="/user/{{ user_info.username }}">
-                        프로필
-                    </a>
-                    <a href="/boards/form" class="dropdown-item">
-                        각오쓰기
-                    </a>
-                    <a class="dropdown-item" onclick="sign_out()" style="color: red">
-                        로그아웃
-                    </a>
-                </div>
+    <span class="logo" onclick="home()">SCRUM!</span>
+    <div class="navbar-item dropdown is-right is-hoverable">
+        <div class="dropdown-trigger">
+            <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+                <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                    프로필
+                </a>
+                <a href="/boards/form" class="dropdown-item">
+                    각오쓰기
+                </a>
+                <a class="dropdown-item" onclick="sign_out()" style="color: red">
+                    로그아웃
+                </a>
             </div>
         </div>
+    </div>
 </nav>
 <section>
     <div id="cards-box"></div>
