@@ -4,7 +4,7 @@
 
     <!-- Webpage Title -->
     <title>{{ user_info.nickname }} | SCRUM! </title>
-
+{#타이틀 배너를 _id 값에 해당하는 nickname을 넣어줌 #}
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -34,6 +34,7 @@
             cookie_check()
             get_posts();
         })
+        {#페이지를 열었을때 조건없이 바로 실행 시켜주는 함수()#}
 
         function cookie_check() {
             let cookie = $.cookie('mytoken');
@@ -42,6 +43,7 @@
                 window.location.replace("/login")
             }
         }
+    {#페이지에 접근하는 쿠키를 확인하고 쿠키가 없으면 로그인 화면으로 돌려 보내주는 부분#}
     </script>
     <script>
         function sign_out() {
@@ -49,6 +51,7 @@
             alert('로그아웃!')
             window.location.href = "/login"
         }
+        {#로그아웃 버튼을 누르면 alert과 쿠키삭제를해주고 로그인 화면으로 보내주는 함수#}
 
         function del(board_id) {
             console.log(board_id)
@@ -59,9 +62,11 @@
                     board_id_give: board_id,
                     member_id_give: '{{ user_info.username }}'
                 },
+                {#게시물에 id값과 db에 저장된 유저이름을 give로 받아 서버쪽 /api/boards/delete에 보내주는 역할을 함#}
                 success: function (response) {
                     alert(response['msg']);
                     window.location.reload()
+                {#위 결과물이 잘 실행 됐을때 새로고침을 해주는 역할#}
                 }
             })
         }
@@ -70,56 +75,65 @@
             var regExp = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
             return regExp.test(asValue);
         }
+        {#이메일 형식을 맞춰주는 함수#}
 
         function is_nickname(asValue) {
             var regExp = /^[가-힣]{2,6}$/;
             return regExp.test(asValue);
         }
+        {#닉네임 형식을 맞춰주는 함수#}
 
 
         function update_profile() {
             let name = $('#input-name').val()
-
+            {#닉네임 id값을 받아오는 함수#}
             if (name == "") {
                 $('#input-name').focus()
                 alert('닉네임을 입력해주세요')
                 return;
+            {#닉네임이 안적혀있을때 alert을해주고 리턴을 해주는 부분#}
             } else if (!is_nickname(name)) {
                 $("#input-name").focus()
                 alert('닉네임 형식을 확인해주세요')
                 return
+            {#닉네임 형식을 계산하는 함수를 추가해 계산을 해주고 맞지 않는 다면 alert을 띄우고 리턴을 해주는 함수#}
             } else {
             }
 
             let email = $('#input-email').val()
+            {#이메일 id값을 받아오는 함수#}
             if (email == "") {
                 $("#input-email").focus()
                 alert('email을 입력해주세요')
                 return;
+            {#email값에 아무것도 없을때 alert을 띄우고 리턴을 해주는 부분#}
             } else if (!is_email(email)) {
                 $("#input-email").focus()
                 alert('email 형식을 확인해주세요')
                 return
+            {#email값을 계산해주는 함수에 넣고 다시 불러와 형식에 맞지 않는다면 alert창을 띄워주는 함수#}
             } else {
             }
-
             let about = $("#textarea-about").val()
+            {#소개글 id값을 받아오는 함수#}
 
             if (about == "") {
                 $('#textarea-about').focus()
                 alert('자신을 소개해주세요!')
                 return;
-            }else{}
-
+            }else{
+            }
+            {#소개글에 아무것도 작성이 안됐을때 alert, return해주는 함수#}
 
             let file = $('#input-pic')[0].files[0]
-
+            {#프로필 변경 파일 형식을 담아두는 함수#}
 
             let form_data = new FormData()
             form_data.append("name_give", name)
             form_data.append("email_give", email)
             form_data.append("file_give", file)
             form_data.append("about_give", about)
+            {#변경된 파일 형식을 보내주는 함수#}
 
             $.ajax({
                 type: "POST",
@@ -132,8 +146,7 @@
                     if (response["result"] == "success") {
                         alert(response["msg"])
                         window.location.reload()
-                    }else {
-                        alert(response["msg"])
+                    {#프로필 업데이트 및 형식에 어긋나서 나오지 않는걸 false 해주는 동작#}
                     }
                 }
             });
@@ -157,6 +170,7 @@
             }
             return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         }
+        {#게시물을 올린 시간을 time2str함수로 계산식을 짜서 넣어주고 몇초전, 몇분전, 몇일전으로 나타내주는 함수#}
 
         function get_posts() {
             $.ajax({
@@ -165,7 +179,9 @@
                 data: {},
                 success: function (response) {
                     let articles = response['articles']
+                    {#불러온 게시불을 articles에 할당하는 부분#}
                     $('#post-box').empty()
+                    {#게시물을 불러올떄 .empty로 원래 요소들을 지우고 태그 내용물만 남기게 하는 함수#}
                     for (let i = 0; i < articles.length; i++) {
                         let boardId = articles[i]['_id']
                         let title = articles[i]['title']
@@ -173,13 +189,16 @@
                         let content = articles[i]['content']
                         let emotion_receive = articles[i]['emotion']
                         let modifiedDate = articles[i]['modifiedDate']
+                        {#가입정보와 각오작성된 게시물을 GET해오고 값을 할당해 주는 함수#}
                         let emotion_html = '';
                         if (emotion_receive == 'nice') emotion_html = `<i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>`
                         else if (emotion_receive == 'normal') emotion_html = `<i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>`
                         else emotion_html = `<i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>`
+                        {#게시글에 표시한 기분을 if문으로 돌려 해당하는 이모티콘을 배정해주는 동작#}
 
                         let time_post = new Date(modifiedDate)
                         let time_before = time2str(time_post)
+                        {#타임 데이터를 계산하는 함수에 넣어서 다시 산출해주는 함수#}
                         let temp_html = `<article id="board_id_${boardId}" class="media" style="margin: 0px auto 20px auto; padding:20px; width: 800px; background-color:RGBA(92, 188, 218, 0.5); border:solid; border-color: powderblue; border-radius: 40px;">
                                             <figure class="media-left">
                                             <div class="image is-64x64">
@@ -206,8 +225,9 @@
                                             </div>
                                             </div>
                                         </article>`
-
+                        {#게시글 레이아웃을 temp_html=``으로 넣어 해당하는 변수 값을 넣어주는 부분#}
                         $('#post-box').append(temp_html)
+                    {#변수 값을 넣어준 레이아웃을 나타내주는 함수#}
                     }
                 }
             })
@@ -220,6 +240,7 @@
                 window.location.href = "/boards/form"
             }
         }
+    {# 해당 값이 할당된 버튼을 눌러서 포스팅한 값이 있으면 메인페이지로.. 없으면 전체게시판으로 보내는 함수 #}
     </script>
     <style>
         .modal_box {
@@ -248,17 +269,22 @@
     <div class="navbar-brand" style="height: 64px;">
         <a class="navbar-item" onclick="home()">
             <span class=logo style="font-size: 30px;">SCRUM!</span>
+
         </a>
     </div>
 </nav>
+{#좌측 상단 네비게이션바를 나타는 값. 로고자체를 버튼으로 만들어 값에따라 게시글 작성화면과 홈 화면으로 보내주는 역할을 함#}
 <section class="hero is-white" style="background-color: RGBA(92, 188, 218, 0.5); ">
     <div class="hero-body"
          style="margin:30px auto 0px auto; min-width: 400px; background-color: white; border-radius:30px; width: 800px; height: 200px;">
+{#프로필의 백그라운드 배경을 나타내는 코드. 고정 값을 지정해줌#}
         <article class="media">
             <figure class="media-left" style="align-self: center;">
                 <div class="image is-96x96">
                     <img class="is-rounded" style="width:96px;height: 96px; object-fit: cover; "
+{#이미지 사진이 들어가는 코드. 크기가 다른 사진이 들어가면 공간이 무너져 가로세로 값을 부여하고 object를 고정하는 값을 부여함#}
                          src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+{#이미지 사진이 들어가는 코드, static에 파일을 불러오는 jinja2를 사용함#}
                 </div>
             </figure>
             <div class="media-content">
@@ -271,6 +297,7 @@
                     <div>
                         {{ user_info.profile_info }}
                     </div>
+{#프로필 박스에 jinja2로 id값에 해당하는 닉네임,이름,이메일,소개를 불러옴#}
                     </p>
                 </div>
             </div>
@@ -278,18 +305,18 @@
         </nav>
         <div class="modal" id="modal-edit">
             <div class="modal-background" onclick='$("#modal-edit").removeClass("is-active")'></div>
+{#모달창 백그라운드를 클릭하면 닫아지는 역할을 함#}
             <div class="modal-content">
                 <div class="modal_box">
                     <article class="media">
                         <div class="media-content">
-
                             <div class="field">
                                 <label class="label" for="input-name">닉네임</label>
                                 <p class="control">
                                     <input id="input-name" class="input"
                                            placeholder="닉네임을 적어주세요" value="{{ user_info.nickname }}">
                                 </p>
-
+{#프로필 변경 모달 창에 닉네임을 적는 부분. 'value'함수를 써줘서 기존에 값을 불러와 수정 할 수 있게 만듬. #}
                             </div>
                             <div class="field">
                                 <label class="label" for="input-email">Email</label>
@@ -298,8 +325,7 @@
                                            placeholder="abcdef@gmail.com" value="{{ user_info.email }}">
                                 </p>
                             </div>
-
-
+{#프로필 변경 모달 창에 이메일을 적는 부분. 'value'함수를 써줘서 기존에 값을 불러와 수정 할 수 있게 만듬. #}
                             <div class="field">
                                 <label class="label" for="input-pic">프로필 사진</label>
                                 <div class="control is-expanded">
@@ -315,7 +341,7 @@
                                                   style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
                                         </label>
                                     </div>
-
+{#프로필 변경 모달 창에 사진을 넣어주는 부분. 이미 불러온 파일을 jinja2를 활용해 수정을 안해도 기본값이 그대로 적용하게 만듬. #}
                                 </div>
                             </div>
                             <div class="field">
@@ -325,6 +351,7 @@
                                   placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
                                 </p>
                             </div>
+{#프로필 변경 모달 창에 자기소개를 적는 부분. 'value'함수를 써줘서 기존에 값을 불러와 수정 할 수 있게 만듬. #}
                             <nav class="level is-mobile">
                                 <div class="level-left">
 
@@ -333,9 +360,11 @@
                                     <div class="level-item">
                                         <a class="button is-sparta" onclick="update_profile()">업데이트</a>
                                     </div>
+{#프로필 변경 모달에 onclick() 함수를 부여해 변경 된 값을 POST를 통해 update함수로 보내주는 역활을 함  #}
                                     <div class="level-item">
                                         <a class="button is-sparta is-outlined"
                                            onclick='$("#modal-edit").removeClass("is-active")'>취소</a>
+{#실행 시킨 모달창을 실행 취소 시켜주는 버튼#}
                                     </div>
                                 </div>
                             </nav>
@@ -347,27 +376,31 @@
                     onclick='$("#modal-edit").removeClass("is-active")'></button>
         </div>
     </div>
-
+{#오른쪽 상단에 모달창을 닫아주는 버튼#}
 </section>
 
 <section class="section"
          style="background-color: RGBA(92, 188, 218, 0.5); text-align: center">
     <p class="profile-buttons">
-
         <i onclick="window.location.href='/'" class="fa fa-home" aria-hidden="true">홈
             화면으로</i>
+{#누르면 메인화면으로 보내게 하는 버튼 #}
         {% if status %}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+{#id값이 같을때만 보여주는 if문을 부여해 로그인한 본인만 볼 수 있게 만든 버튼#}
             <i onclick='$("#modal-edit").addClass("is-active")' class="fa fa-pencil-square-o"
                aria-hidden="true">프로필 변경</i>
+{#누르면 프로필 변경 모달이 나오게 하는 버튼#}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+{#띄어쓰기....#}
             <i onclick="window.location.href='/boards/form'" class="fa fa-book"
                aria-hidden="true">각오쓰기</i>
+{#누르면 각오쓰기 화면으로 가는 버튼#}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
             <i onclick="sign_out()" class="fa fa-sign-out" aria-hidden="true">로그아웃</i>
+{#누르면 sing_out함수가 실행 되면서 쿠키가 삭제되고 로그아웃되어 로그인 화면으로 보내주는 버튼#}
         {% endif %}
+{#id값이 같을때만 보여주는 if문이 끝나는 부분 . jinja2#}
     </p>
 
     </article>
@@ -376,10 +409,9 @@
     <button class="modal-close is-large" aria-label="close"
             onclick='$("#modal-post").removeClass("is-active")'></button>
     </div>
-
-
+{#프로필 닫기 버튼#}
 </section>
-
+{#게시물 박스 원본 시작#}
 <section class="section" id="post-box">
     <div id="post-box" class="container">
         <article class="media"
@@ -399,6 +431,7 @@
                 </div>
             </div>
         </article>
+{#게시물 박스 원본 끝#}
     </div>
 </section>
 </body>

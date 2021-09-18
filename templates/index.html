@@ -151,6 +151,7 @@
             min-height: 300px;
         {#height: 40vh;#} border-radius: 10px;
             cursor: pointer;
+                height: fit-content;
         }
 
         .card-columns:hover {
@@ -267,8 +268,12 @@
             display: block;
             margin: 10px auto;
         }
-
-
+        .content {white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+}
     </style>
     <script>
         let now
@@ -277,7 +282,7 @@
             listing()
             now = 0;
         })
-
+      
         {#페이지에 접근하는 쿠키를 확인하고 쿠키가 없으면 로그인 화면으로 돌려 보내주는 부분#}
         function cookie_check() {
             let cookie = $.cookie('mytoken');
@@ -303,7 +308,7 @@
                 return nice_html;
             }
         }
-
+      
         {#게시물을 올린 시간을 time2str함수로 계산식을 짜서 넣어주고 몇초전, 몇분전, 몇일전으로 나타내주는 함수#}
         function time2str(date) {
             let today = new Date()
@@ -322,7 +327,7 @@
             }
             return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         }
-
+      
         {#오늘의 할일의 카드를 표시하는 기능#}
         function listing() {
             $.ajax({
@@ -383,6 +388,8 @@
                 }
             )
         }
+        
+         {#로그아웃 버튼을 누르면 alert과 쿠키삭제를해주고 로그인 화면으로 보내주는 함수#}
 
          {#로그아웃 버튼을 누르면 alert과 쿠키삭제를해주고 로그인 화면으로 보내주는 함수#}
 
@@ -391,7 +398,7 @@
             alert('로그아웃!')
             window.location.href = "/login"
         }
-
+      
         {#메인으로 돌아가기#}
         function home() {
             window.location.href = "/"
