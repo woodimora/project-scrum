@@ -248,22 +248,6 @@ def check_dup_nick():
     return jsonify({'result': 'success', 'exists': exists})
 
 
-@app.route('/user')
-def detail():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
-        if user_info is None:
-            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-        r = requests.get('/api/board')
-        response = r.json()
-        article = response['all_article']
-        return render_template('user.html', article=article)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-
-
 # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
 @app.route('/user/<username>')
 def user(username):
