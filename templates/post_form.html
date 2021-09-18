@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>각오작성 | SCRUM!</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="스크럼! - 모여라!"/>
+    <meta property="og:description" content="SCRUM! - To Dare Is To Do"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    {#    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">#}
+
+    <!-- Font Awesome CSS -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Luckiest+Guy&family=Source+Code+Pro:ital,wght@0,400;1,900&display=swap"
+          rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    {#    <script src="{{ url_for('static', filename='myjs.js') }}"></script>#}
+    <script>
+
+    </script>
+    <style>
+        .logo {
+            font-size: 30px;
+            margin: auto 0 auto 15px;
+            font-family: 'Luckiest Guy', cursive;
+            color: #5cbcda;
+            cursor: pointer;
+        }
+
+        body {
+            background-color: RGBA(92, 188, 218, 0.5);
+            min-width: 300px;
+            min-height: 100vh;
+            padding-bottom: 1vh;
+        }
+
+        .navbar-item {
+            margin-left: auto;
+            float: right;
+        }
+
+
+        .content-top {
+            padding-top: 3vh;
+            padding-bottom: 3vh;
+        }
+
+        .main-title {
+            height: 10%;
+            font-size: 5vh;
+            font-weight: bold;
+            color: white;
+            margin: auto;
+            text-align: center;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .container-item {
+            margin: 1vh auto 1vh auto;
+        }
+
+        .board-container {
+            width: 50vw;
+            min-width: 250px;
+            max-width: 50vh;
+            margin: auto;
+        }
+
+        .user_info_div {
+            max-width: 50vh;
+            margin: 0px auto 10px auto;
+            width: fit-content;
+        }
+
+        .profile_pic {
+            max-width: 20vh;
+            width: 10vh;
+            margin: auto;
+        }
+
+        .user_info {
+            width: fit-content;
+            text-align: center;
+            margin: auto;
+        }
+
+        .user_info > .name {
+            font-size: min(max(16px, 4vh), 25px);
+            color: white;
+        }
+
+        .user_info > .id {
+            font-size: min(max(12px, 3vh), 22px);
+            color: white;
+        }
+
+        .board-title {
+
+        }
+
+        .board-textarea {
+            border-radius: 20px;
+            min-height: 10vh;
+            height: 30vh;
+        }
+
+        .board-button {
+            margin-top: 2vh;
+        }
+
+        .button-custom {
+            background-color: #5cbcda;
+            color: white;
+            display: block;
+            margin: auto;
+            width: 10vw;
+            min-width: 90px;
+        }
+
+        .emotion {
+            width: 60%;
+            display: flex;
+            justify-content: space-between;
+            margin: auto;
+        }
+
+        [type=radio] {
+            height: 0;
+            width: 0;
+            opacity: 0;
+        }
+
+        .emotion > label * {
+            cursor: pointer;
+            color: white;
+        }
+
+        .nice-label > input:checked + i {
+            color: green;
+        }
+
+        .normal-label > input:checked + i {
+            color: orange;
+        }
+
+        .bad-label > input:checked + i {
+            color: red;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            cookie_check()
+        })
+
+        function cookie_check() {
+            let cookie = $.cookie('mytoken');
+            if (cookie == null) {
+                alert('로그인 정보가 존재하지 않습니다.')
+                window.location.replace("/login")
+            }
+        }
+
+
+        function post_board() {
+            let emotion = $('input[name=emotion-radio]:checked').val()
+            let title = $('#title').val();
+            let content = $('#content').val();
+
+            if (title == "") {
+                alert("제목을 입력해주세요!")
+                return;
+            }
+            if (content == "") {
+                alert("내용을 입력해주세요!")
+                return;
+            }
+            if (emotion == null) {
+                alert("오늘의 기분을 선택해 주세요!")
+                return;
+            }
+
+            let form_data = new FormData()
+            form_data.append("title_give", title)
+            form_data.append("content_give", content)
+            form_data.append("emotion_give", emotion)
+            console.log(emotion)
+            $.ajax({
+                type: "POST",
+                url: "/api/boards/add",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response['msg'])
+                        window.localStorage.setItem('post_state', 'posted')
+                        window.location.href = "/"
+                    }
+                }
+            });
+        }
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
+        function home() {
+            if (window.localStorage.getItem('post_state') == 'posted') {
+                window.location.href = "/"
+            } else {
+                alert("오늘의 각오를 작성해주세요!")
+            }
+        }
+    </script>
+
+</head>
+<body>
+<nav class="navbar" role="navigation">
+    <span class="logo" onclick="home()">SCRUM!</span>
+    <div class="navbar-item dropdown is-right is-hoverable">
+        <div class="dropdown-trigger">
+            <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+                <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                    프로필
+                </a>
+                <a class="dropdown-item" onclick="sign_out()" style="color: red">
+                    로그아웃
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="section is-small content-top">
+    <div class="main-title">{{ today }}</div>
+    <div class="main-title">SCRUM!</div>
+</section>
+<article class="article board-container">
+    <a class="image user_info_div" href="/user/{{ user_info.username }}">
+        <div class="profile_pic">
+            <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}"">
+        </div>
+
+        <div class="user_info">
+            <span class="name">
+                {{ user_info.nickname }}
+            </span>
+            <br>
+            <span class="id">
+                @{{ user_info.username }}
+            </span>
+        </div>
+    </a>
+
+    <input id="title" class="input is-rounded container-item board-title" type="text" placeholder="제목을 입력하세요.">
+    <textarea id="content" class="textarea container-item board-textarea" placeholder="오늘의 각오를 작성하세요."></textarea>
+    <div class="control emotion">
+        <label class="radio nice-label">
+            <input type="radio" name="emotion-radio" id="nice" value="nice">
+            <i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>
+        </label>
+        <label class="radio normal-label">
+            <input type="radio" name="emotion-radio" id="normal" value="normal">
+            <i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>
+        </label>
+        <label class="radio bad-label">
+            <input type="radio" name="emotion-radio" id="bad" value="bad">
+            <i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>
+        </label>
+    </div>
+    <div class="board-button">
+        <button class="button button-custom" onclick="post_board()" id="post-button">작성하기
+        </button>
+    </div>
+</article>
+</body>

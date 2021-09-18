@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en" class="containers">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Home | SCRUM!</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="스크럼! - 모여라!"/>
+    <meta property="og:description" content="SCRUM! - To Dare Is To Do"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Luckiest+Guy&family=Source+Code+Pro:ital,wght@0,400;1,900&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome CSS -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script>
+
+    </script>
+    <style>
+           .logo {
+            font-size: 30px;
+            margin: auto 0 auto 15px;
+            font-family: 'Luckiest Guy', cursive;
+            color: #5cbcda;
+            cursor: pointer;
+        }
+
+        body {
+            background-color: RGBA(92, 188, 218, 0.5);
+            min-height: 100vh;
+            padding-bottom: 1rem;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+
+        }
+
+        body > section {
+            text-align: center;
+        }
+
+        .navbar-item {
+            margin-left: auto;
+            float: right;
+        }
+
+        .navbar {
+
+        }
+
+        .containers::-webkit-scrollbar {
+            width: 15px;
+            width: 20px;
+        }
+
+        .containers::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            background: rgb(148, 110, 255);
+            background: linear-gradient(180deg, rgba(148, 110, 255, 1) 0%, rgba(255, 168, 252, 1) 100%);
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+        .container::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .main-title {
+            height: 10%;
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            margin: auto;
+            text-align: center;
+        }
+
+        .container-item {
+            margin: 15px auto;
+        }
+
+        .board-container {
+            width: 45%;
+            max-width: 800px;
+            min-width: 400px;
+            min-height: 50vw;
+            margin: auto;
+        }
+
+        .board-container > #profile_pic {
+            width: 200px;
+            margin: 0px auto 40px auto;
+        }
+
+        .board-textarea {
+            border-radius: 20px;
+            min-height: 10vw;
+            max-height: 40vw;
+            height: 100%;
+        }
+
+        .board-button {
+            min-width: 300px;
+            width: 60%;
+            margin: 30px auto;
+        }
+
+        .emotion {
+            width: 60%;
+            min-width: 225px;
+            display: flex;
+            justify-content: space-between;
+            margin: auto;
+        }
+
+        [type=radio] {
+            height: 0;
+            width: 0;
+            opacity: 0;
+        }
+
+        [type=radio] + label {
+            cursor: pointer;
+            color: white;
+        }
+
+        [type=radio]:checked + label {
+            color: blue;
+        }
+
+        .card-columns {
+            max-width: 15vw;
+            min-width: 350px;
+            width: 26%;
+            margin: 30px;
+            min-height: 300px;
+        {#height: 40vh;#} border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .card-columns:hover {
+            min-width: 350px;
+            width: 26%;
+            margin: 30px;
+            box-shadow: 3px 2px 5px 1px #ffdfdf;
+            border-radius: 10px;
+            min-height: 300px;
+        {#height: 40vh;#}
+        }
+
+        #cards-box {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .image {
+            display: inline-block;
+
+        }
+
+        .title {
+            display: block;
+        }
+
+        .top {
+            background-color: transparent;
+            display: inline;
+        }
+
+
+        .wave {
+            opacity: .4;
+            position: absolute;
+            top: 3%;
+            left: 50%;
+            background: #50f0ff;
+            width: 500px;
+            height: 500px;
+            margin-left: -250px;
+            margin-top: -350px;
+            transform-origin: 50% 48%;
+            border-radius: 43%;
+            animation: drift 3000ms infinite linear;
+        }
+
+        .wave.-three {
+            animation: drift 5000ms infinite linear;
+            background: #fffecf;
+        }
+
+        .wave.-two {
+            animation: drift 7000ms infinite linear;
+            opacity: .1;
+            background: #7494ff;
+        }
+
+        @keyframes drift {
+            from {
+                transform: rotate(0deg);
+            }
+            from {
+                transform: rotate(360deg);
+            }
+        }
+
+        .containers {
+            overflow: auto;
+        }
+
+        .containers::-webkit-scrollbar {
+            width: 20px;
+        }
+
+        .containers::-webkit-scrollbar-thumb {
+            background: rgb(148, 110, 255);
+            background: linear-gradient(180deg, rgba(148, 110, 255, 1) 0%, rgba(255, 168, 252, 1) 100%);
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+
+
+        .container::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+
+        .box {
+            min-height: 300px;
+            height: 42vh;
+            box-shadow: 0 2px 30px rgba(black, .2);
+            background: rgb(255, 255, 255);
+            background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 233, 254, 1) 71%, rgba(255, 142, 252, 1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box:after {
+            content: '';
+            display: block;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 11;
+        }
+
+        .more-button {
+            display: block;
+            margin: 10px auto;
+        }
+
+
+    </style>
+    <script>
+        let now
+
+        $(document).ready(function () {
+            listing()
+            now = 0;
+        })
+
+        function cookie_check() {
+            let cookie = $.cookie('mytoken');
+            if (cookie == null) {
+                alert('로그인 정보가 존재하지 않습니다.')
+                window.location.replace("/login")
+            }
+        }
+
+        let normal_html = `<i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>`
+        let nice_html = `<i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>`
+        let bad_html = `<i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>`
+
+        function emotion(emotion_receive) {
+            if (emotion_receive == 'bad') {
+                console.log('bad')
+                return bad_html;
+            } else if (emotion_receive == 'normal') {
+                console.log('normal')
+                return normal_html;
+            } else {
+                return nice_html;
+            }
+        }
+
+        function time2str(date) {
+            let today = new Date()
+            let time = (today - date) / 1000 / 60  // 분
+
+            if (time < 60) {
+                return parseInt(time) + "분 전"
+            }
+            time = time / 60  // 시간
+            if (time < 24) {
+                return parseInt(time) + "시간 전"
+            }
+            time = time / 24
+            if (time < 7) {
+                return parseInt(time) + "일 전"
+            }
+            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+        }
+
+        function listing() {
+            $.ajax({
+                    type: "GET",
+                    url: "/api/boards",
+                    data: {
+                        now_give: now
+                    },
+                    success: function (response) {
+                        let articles = response['all_article']
+                        let total_count = response['total_count']
+                        let end = response['end']
+                        let count = response['count']
+                        now = end;
+                        let more_state = response['state']
+                        console.log(count, end, more_state)
+                        if (more_state)
+                            $("#more_button").removeClass("is-hidden")
+                        else
+                            $("#more_button").addClass("is-hidden")
+                        console.log(total_count)
+                        for (let i = 0; i < articles.length; i++) {
+                            let title = articles[i]['title']
+                            let memberId = articles[i]['memberId']
+                            let content = articles[i]['content']
+                            let emotion_receive = articles[i]['emotion']
+                            let modifiedDate = articles[i]['modifiedDate']
+                            let temp_html = document.createElement("div");
+                            let time_post = new Date(modifiedDate)
+                            let time_before = time2str(time_post)
+                            let user_profile_pic = articles[i]['profile_pic_real']
+                            temp_html.classList.add("card-columns")
+                            temp_html.innerHTML = `<a href="/user/${memberId}"><div class="box">
+                                                            <div class="card-content">
+                                                            <div class='wave -one'></div>
+                                                            <div class='wave -two'></div>
+                                                            <div class='wave -three'></div>
+                                                                <p class="content">${emotion(emotion_receive)}</p>
+                                                            <div class="top">
+                                                                <div class="image is-64x64">
+                                                                <img class="is-rounded" style="width:64px;height: 64px; object-fit: cover;" src="static/${user_profile_pic}"
+                                                                         alt="Image">
+                                                                </div>
+                                                            </div>
+<p class="subtitle is-6" style="margin-bottom: 30px">${memberId}</p>
+                                                                <h5 class="title is-4 content-text">${title}</h5>
+                                                                <p class="content content-text">${content}</p>
+                                                                <p class="save-date content">${time_before}</p>
+                                                            </div>
+                                                        </div></a>`
+                            $('#cards-box').append(temp_html)
+                        }
+                    }
+                }
+            )
+        }
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
+        function home() {
+            window.location.href = "/"
+        }
+    </script>
+
+</head>
+<body>
+<nav class="navbar" role="navigation">
+    <span class="logo" onclick="home()">SCRUM!</span>
+    <div class="navbar-item dropdown is-right is-hoverable">
+        <div class="dropdown-trigger">
+            <i class="fa fa-bars fa-2x" aria-hidden="true" onclick=""></i>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+                <a class="dropdown-item" href="/user/{{ user_info.username }}">
+                    프로필
+                </a>
+                <a href="/boards/form" class="dropdown-item">
+                    각오쓰기
+                </a>
+                <a class="dropdown-item" onclick="sign_out()" style="color: red">
+                    로그아웃
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+<section>
+    <div id="cards-box"></div>
+</section>
+<div>
+    <button onclick="listing()" id="more_button" class="button is-primary is-rounded more-button is-hidden">더보기</button>
+</div>
+</body>
+</html>
