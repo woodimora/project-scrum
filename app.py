@@ -199,23 +199,27 @@ def get_user_post(username):
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
+    # 클라이언트에서 받아온 값을 각 변수에 담기
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
-
+    # 패스워드는 해쉬함수를 이용하여 암호화 하고 그 값을 pw_hash 변수에 담는다
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    # DB의 회원 정보와 맞는지 확인
     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
 
     if check_today(username_receive):
-        status = 'posted'
+        status = 'posted' # 당일 각오 이미 작성했을 시에는 메인 페이지
     else:
-        status = 'not_yet'
+        status = 'not_yet' # 아니라면 작성 페이지로
     if result is not None:
         payload = {
             'id': username_receive,
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 3)  # 로그인 3시간 유지
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        # 로그인 정보를 암호화한 JWT
 
+        # DB의 정보와 맞다면 로그인 성공
         return jsonify({'result': 'success', 'token': token, 'post_state': status})
     # 찾지 못하면
     else:
@@ -224,13 +228,17 @@ def sign_in():
 
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
+    # 회원가입
+    # 클라이언트에서 받아온 값을 각 변수에 담기
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
+    # 패스워드는 DB에 그대로 담지 않고 아래의 해시함수를 이용하여 암호화한 값을 대신 담는다
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     email_receive = request.form['email_give']
     nickname_receive = request.form['nickname_give']
     profile_info_receive = request.form['profile_info_give']
 
+    # 받아온 값을 DB에 저장
     doc = {
         "username": username_receive,                               # 아이디
         "password": password_hash,                                  # 비밀번호
@@ -243,17 +251,19 @@ def sign_up():
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
 
-
+# 아이디 중복확인
 @app.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
+    # 클라이언트로부터 받아온 값이 DB에 존재하는지 존재하지 않는지 파악
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
-
+# 닉네임 중복확인
 @app.route('/sign_up/check_dup_nick', methods=['POST'])
 def check_dup_nick():
     nickname_receive = request.form['nickname_give']
+    # 클라이언트로부터 받아온 값이 DB에 존재하는지 존재하지 않는지 파악
     exists = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
