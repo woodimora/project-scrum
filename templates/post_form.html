@@ -14,13 +14,11 @@
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    {#    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">#}
 
     <!-- Font Awesome CSS -->
-
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Luckiest+Guy&family=Source+Code+Pro:ital,wght@0,400;1,900&display=swap"
@@ -29,7 +27,6 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    {#    <script src="{{ url_for('static', filename='myjs.js') }}"></script>#}
     <script>
 
     </script>
@@ -164,10 +161,11 @@
 
     </style>
     <script>
+        {# 페이지 로드시 쿠키 확인 #}
         $(document).ready(function () {
             cookie_check()
         })
-
+        {# 쿠키 확인: 쿠키에 토큰이 없다면 로그인 페이지로 이동 #}
         function cookie_check() {
             let cookie = $.cookie('mytoken');
             if (cookie == null) {
@@ -176,25 +174,29 @@
             }
         }
 
-
+        {# 게시물 작성 #}
         function post_board() {
             let emotion = $('input[name=emotion-radio]:checked').val()
             let title = $('#title').val();
             let content = $('#content').val();
 
+            {# 제목이 없다면 alert 출력 #}
             if (title == "") {
                 alert("제목을 입력해주세요!")
                 return;
             }
+            {# 내용이 없다면 alert 출력 #}
             if (content == "") {
                 alert("내용을 입력해주세요!")
                 return;
             }
+            {# 기분을 선택하지 않았다면 alert 출력 #}
             if (emotion == null) {
                 alert("오늘의 기분을 선택해 주세요!")
                 return;
             }
 
+            {# input 내용을 불러와 서버로 전달 #}
             let form_data = new FormData()
             form_data.append("title_give", title)
             form_data.append("content_give", content)
@@ -210,19 +212,23 @@
                 success: function (response) {
                     if (response["result"] == "success") {
                         alert(response['msg'])
+                        {# 게시물 작성 완료 후 게시물 작성 이력을 로컬스토리지에 저장 #}
                         window.localStorage.setItem('post_state', 'posted')
+                        {# 게시물 작성 후 메인 화면으로 이동 #}
                         window.location.href = "/"
                     }
                 }
             });
         }
 
+        {# 로그아웃 : 로그인 정보 토큰을 쿠키에서 제거하고 alert를 띄운 후 로그인 페이지로 이동#}
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
         }
 
+        {# 메인 페이지로 이동 시 로컬스토리지를 확인하여 오늘 작성한 각오가 없다면 alert를 띄우고 오늘의 각오를 작성 했다면 메인 페이지로 이동 #}
         function home() {
             if (window.localStorage.getItem('post_state') == 'posted') {
                 window.location.href = "/"
