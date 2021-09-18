@@ -1,5 +1,6 @@
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="containers">
 <head>
 
     <!-- Webpage Title -->
@@ -33,7 +34,7 @@
 
     </script>
     <style>
-        .logo {
+           .logo {
             font-size: 30px;
             margin: auto 0 auto 15px;
             font-family: 'Luckiest Guy', cursive;
@@ -45,6 +46,9 @@
             background-color: RGBA(92, 188, 218, 0.5);
             min-height: 100vh;
             padding-bottom: 1rem;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+
         }
 
         body > section {
@@ -60,6 +64,24 @@
 
         }
 
+        .containers::-webkit-scrollbar {
+            width: 15px;
+            width: 20px;
+        }
+
+        .containers::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            background: rgb(148, 110, 255);
+            background: linear-gradient(180deg, rgba(148, 110, 255, 1) 0%, rgba(255, 168, 252, 1) 100%);
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+        .container::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
         .main-title {
             height: 10%;
             font-size: 80px;
@@ -136,7 +158,7 @@
             min-width: 350px;
             width: 26%;
             margin: 30px;
-            box-shadow: 3px 2px 3px 3px #ffdbdb;
+            box-shadow: 3px 2px 5px 1px #ffdfdf;
             border-radius: 10px;
             min-height: 300px;
         {#height: 40vh;#}
@@ -169,7 +191,7 @@
             position: absolute;
             top: 3%;
             left: 50%;
-            background: #34fff5;
+            background: #50f0ff;
             width: 500px;
             height: 500px;
             margin-left: -250px;
@@ -187,7 +209,7 @@
         .wave.-two {
             animation: drift 7000ms infinite linear;
             opacity: .1;
-            background: #ff63e7;
+            background: #7494ff;
         }
 
         @keyframes drift {
@@ -199,11 +221,35 @@
             }
         }
 
+        .containers {
+            overflow: auto;
+        }
+
+        .containers::-webkit-scrollbar {
+            width: 20px;
+        }
+
+        .containers::-webkit-scrollbar-thumb {
+            background: rgb(148, 110, 255);
+            background: linear-gradient(180deg, rgba(148, 110, 255, 1) 0%, rgba(255, 168, 252, 1) 100%);
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+
+
+        .container::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+
         .box {
-            min-height: 320px;
-            height: 25vh;
+            min-height: 300px;
+            {#height: 42vh;#}
             box-shadow: 0 2px 30px rgba(black, .2);
-            background-color: #fff3f3;
+            background: rgb(255, 255, 255);
+            background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 233, 254, 1) 71%, rgba(255, 142, 252, 1) 100%);
             position: relative;
             overflow: hidden;
         }
@@ -216,14 +262,6 @@
             width: 100%;
             height: 100%;
             z-index: 11;
-            transform: translate3d(0, 0, 0);
-        }
-
-        .content-text {
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .more-button {
@@ -231,13 +269,7 @@
             margin: 10px auto;
         }
 
-        a {
-            all: unset;
-        }
 
-        .is-rounded {
-
-        }
     </style>
     <script>
         let now
