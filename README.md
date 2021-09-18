@@ -34,5 +34,5 @@ SCRUM! 오늘의 각오와 컨디션을 작성하여 공유하며 오늘 하루�
 HTML, CSS, javascript, Python, flask
 
 ## 📽미니프로젝트 결과물
-
+https://youtu.be/lCG_lE8HfVM
 
