@@ -66,13 +66,12 @@ def get_boards():
             articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(20))
 
         count = len(articles)
-        # print(len(articles))
 
         for article in articles:
             member_id = article['memberId']
             user_profile = db.users.find_one({"username":member_id}, {'_id':False,'password':False})
             if user_profile is None:
-                articles.remove(article)
+                article['profile_pic_real'] = "profile_pics/profile_placeholder.png"
             else:
                 article['profile_pic_real'] = user_profile["profile_pic_real"]
 
