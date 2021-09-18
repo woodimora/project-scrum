@@ -36,3 +36,14 @@ HTML, CSS, javascript, Python, flask
 ## 📽미니프로젝트 결과물
 https://youtu.be/lCG_lE8HfVM
 
+1. 로그인 페이지
+<img width="1138" alt="Screen Shot 2021-09-18 at 12 24 31 PM" src="https://user-images.githubusercontent.com/70922665/133871019-b466e06b-9c2a-4dfc-895d-2a33a5d8c4b8.png">
+2. 각오 작성 페이지
+<img width="1141" alt="Screen Shot 2021-09-18 at 12 25 07 PM" src="https://user-images.githubusercontent.com/70922665/133871029-82079a1a-35e3-4a47-801f-ee94c9224f89.png">
+3. 메인 페이지
+<img width="1140" alt="Screen Shot 2021-09-18 at 12 24 56 PM" src="https://user-images.githubusercontent.com/70922665/133871039-289bd1c9-5f35-48a0-8f51-47cad17d266f.png">
+4. 프로필 페이지
+<img width="1141" alt="Screen Shot 2021-09-18 at 12 25 21 PM" src="https://user-images.githubusercontent.com/70922665/133871045-9284aecd-1d8c-4080-b6b2-543cce424d1a.png">
+5. 프로필 수정 모달
+<img width="1138" alt="Screen Shot 2021-09-18 at 12 27 35 PM" src="https://user-images.githubusercontent.com/70922665/133871079-24e54870-46ea-4b74-8916-4389092dcd95.png">
+
