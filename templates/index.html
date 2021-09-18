@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" class="containers">
 <head>
@@ -273,12 +272,13 @@
     </style>
     <script>
         let now
-
+        {#페이지를 열었을때 조건없이 바로 실행 시켜주는 함수()#}
         $(document).ready(function () {
             listing()
             now = 0;
         })
 
+        {#페이지에 접근하는 쿠키를 확인하고 쿠키가 없으면 로그인 화면으로 돌려 보내주는 부분#}
         function cookie_check() {
             let cookie = $.cookie('mytoken');
             if (cookie == null) {
@@ -287,6 +287,7 @@
             }
         }
 
+         {#오늘의 감정의 이모티콘을 표시하는 기능#}
         let normal_html = `<i class="fa fa-meh-o fa-3x" aria-hidden="true"></i>`
         let nice_html = `<i class="fa fa-smile-o fa-3x" aria-hidden="true"></i>`
         let bad_html = `<i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>`
@@ -303,6 +304,7 @@
             }
         }
 
+        {#게시물을 올린 시간을 time2str함수로 계산식을 짜서 넣어주고 몇초전, 몇분전, 몇일전으로 나타내주는 함수#}
         function time2str(date) {
             let today = new Date()
             let time = (today - date) / 1000 / 60  // 분
@@ -321,6 +323,7 @@
             return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         }
 
+        {#오늘의 할일의 카드를 표시하는 기능#}
         function listing() {
             $.ajax({
                     type: "GET",
@@ -330,6 +333,7 @@
                     },
                     success: function (response) {
                         let articles = response['all_article']
+                        {#불러온 게시불을 articles에 할당하는 부분#}
                         let total_count = response['total_count']
                         let end = response['end']
                         let count = response['count']
@@ -342,6 +346,7 @@
                             $("#more_button").addClass("is-hidden")
                         console.log(total_count)
                         for (let i = 0; i < articles.length; i++) {
+                            {#가입정보와 각오작성된 게시물을 GET해오고 값을 할당해 주는 함수#}
                             let title = articles[i]['title']
                             let memberId = articles[i]['memberId']
                             let content = articles[i]['content']
@@ -352,6 +357,7 @@
                             let time_before = time2str(time_post)
                             let user_profile_pic = articles[i]['profile_pic_real']
                             temp_html.classList.add("card-columns")
+                            {#게시글 레이아웃을 temp_html=``으로 넣어 해당하는 변수 값을 넣어주는 부분#}
                             temp_html.innerHTML = `<a href="/user/${memberId}"><div class="box">
                                                             <div class="card-content">
                                                             <div class='wave -one'></div>
@@ -370,6 +376,7 @@
                                                                 <p class="save-date content">${time_before}</p>
                                                             </div>
                                                         </div></a>`
+                             {#변수 값을 넣어준 레이아웃을 나타내주는 함수#}
                             $('#cards-box').append(temp_html)
                         }
                     }
@@ -377,20 +384,23 @@
             )
         }
 
+         {#로그아웃 버튼을 누르면 alert과 쿠키삭제를해주고 로그인 화면으로 보내주는 함수#}
+
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
         }
 
+        {#메인으로 돌아가기#}
         function home() {
             window.location.href = "/"
         }
     </script>
 
 </head>
-<body>
-<nav class="navbar" role="navigation">
+<body class="has-navbar-fixed-top">
+<nav class="navbar is-fixed-top" role="navigation">
     <span class="logo" onclick="home()">SCRUM!</span>
     <div class="navbar-item dropdown is-right is-hoverable">
         <div class="dropdown-trigger">
@@ -414,6 +424,7 @@
 <section>
     <div id="cards-box"></div>
 </section>
+    {#카드표시#}
 <div>
     <button onclick="listing()" id="more_button" class="button is-primary is-rounded more-button is-hidden">더보기</button>
 </div>
