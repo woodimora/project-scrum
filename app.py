@@ -13,10 +13,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 client = MongoClient('54.180.150.139', 27017, username="test", password="test")
-# client = MongoClient('localhost', 27017)
 db = client.dbscrum
-
-##import pyJWT
 
 SECRET_KEY = 'SCRUM'
 
@@ -24,13 +21,17 @@ SECRET_KEY = 'SCRUM'
 # HTML 화면 보여주기
 @app.route('/')
 def home():
+    # 쿠키에서 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # 시크릿 키를 이용해서 토큰 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인 없다면 로그인으로 이동
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
+        # 유저 정보와 함께 메인페이지 호출
         return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
@@ -40,42 +41,53 @@ def home():
 
 @app.route('/api/boards', methods=['GET'])
 def get_boards():
+    # 쿠키에서 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # 시크릿 키를 이용해서 토큰 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인 없다면 로그인으로 이동
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
         now_receive = request.args.get('now_give')
 
+        PAGE_LIMIT = 20
+        # 최초 페이지를 로드 했을 경우
         if now_receive is None:
             now_receive = 0
+        # 값이 있다면
         else:
             now_receive = int(now_receive)
 
+        # 총 DB에 저장된 게시글 수
         total_count = db.boards.count_documents({})
-        if total_count > now_receive + 20:
+        # 전달할 남은 게시물이 있다면 더보기 버튼 활성화를 위해 참을 전달
+        if total_count > now_receive + PAGE_LIMIT:
             more_state = True
         else:
             more_state = False
 
+        # 게시물을 날짜 역순으로 일정 갯수만큼 DB에서 꺼냄
         if now_receive == 0:
-            articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).limit(20))
+            articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).limit(PAGE_LIMIT))
 
         else:
-            articles = list(db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(20))
+            articles = list(
+                db.boards.find({}, {'_id': False}).sort('modifiedDate', -1).skip(now_receive).limit(PAGE_LIMIT))
 
         count = len(articles)
 
+        # 게시물 작성자의 프로필 사진을 전달하기 위해 article 에 프로필 사진 경로를 넣어줌
         for article in articles:
             member_id = article['memberId']
-            user_profile = db.users.find_one({"username":member_id}, {'_id':False,'password':False})
+            user_profile = db.users.find_one({"username": member_id}, {'_id': False, 'password': False})
             if user_profile is None:
                 article['profile_pic_real'] = "profile_pics/profile_placeholder.png"
             else:
                 article['profile_pic_real'] = user_profile["profile_pic_real"]
 
-        return jsonify({'all_article': articles, 'end': now_receive + count ,'count':count, 'state':more_state})
+        return jsonify({'all_article': articles, 'end': now_receive + count, 'count': count, 'state': more_state})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
@@ -89,7 +101,7 @@ def view_post_form():
         # 시크릿 키를 이용해서 토큰 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         # 토큰에 있는 아이디가 DB에 있는 유저인지 확인하고 유저정보를 클라이언트에게 전달
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         # 만약 유저정보가 없다면 다시 로그인 페이지로 이동
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
@@ -111,7 +123,7 @@ def post_board():
         # 시크릿 키를 이용해서 토큰 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         # 토큰에 있는 아이디가 DB에 있는 유저인지 확인
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         # 만약 유저정보가 없다면 다시 로그인 페이지로 이동
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
@@ -162,40 +174,6 @@ def login():
     return render_template('login.html', msg=msg)
 
 
-@app.route('/user/<username>')
-def user(username):
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
-        if user_info is None:
-            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-
-        user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template('user.html', user_info=user_info, status=status)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/api/boards/<username>')
-def get_user_post(username):
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
-        if user_info is None:
-            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-        posts = list(db.boards.find({"memberId": username}).sort("modifiedDate", -1))
-        for post in posts:
-            post["_id"] = str(post["_id"])
-        return jsonify({'status': status, 'articles': posts})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
@@ -208,9 +186,9 @@ def sign_in():
     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
 
     if check_today(username_receive):
-        status = 'posted' # 당일 각오 이미 작성했을 시에는 메인 페이지
+        status = 'posted'  # 당일 각오 이미 작성했을 시에는 메인 페이지
     else:
-        status = 'not_yet' # 아니라면 작성 페이지로
+        status = 'not_yet'  # 아니라면 작성 페이지로
     if result is not None:
         payload = {
             'id': username_receive,
@@ -240,16 +218,17 @@ def sign_up():
 
     # 받아온 값을 DB에 저장
     doc = {
-        "username": username_receive,                               # 아이디
-        "password": password_hash,                                  # 비밀번호
-        "nickname": nickname_receive,                               # 닉네임
-        "profile_pic": "",                                          # 프로필 사진 파일 이름
-        "profile_pic_real": "profile_pics/profile_placeholder.png", # 프로필 사진 기본 이미지
-        "profile_info": profile_info_receive,                       # 프로필 소개글
-        "email": email_receive                                      # 이메일
+        "username": username_receive,  # 아이디
+        "password": password_hash,  # 비밀번호
+        "nickname": nickname_receive,  # 닉네임
+        "profile_pic": "",  # 프로필 사진 파일 이름
+        "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
+        "profile_info": profile_info_receive,  # 프로필 소개글
+        "email": email_receive  # 이메일
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
+
 
 # 아이디 중복확인
 @app.route('/sign_up/check_dup', methods=['POST'])
@@ -259,6 +238,7 @@ def check_dup():
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
+
 # 닉네임 중복확인
 @app.route('/sign_up/check_dup_nick', methods=['POST'])
 def check_dup_nick():
@@ -267,12 +247,13 @@ def check_dup_nick():
     exists = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
+
 @app.route('/user')
 def detail():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
         r = requests.get('/api/board')
@@ -283,14 +264,60 @@ def detail():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
-@app.route('/update_profile', methods=['POST'])
-def save_img():
+# 각 사용자의 프로필과 글을 모아볼 수 있는 공간
+@app.route('/user/<username>')
+def user(username):
+    # 쿠키에서 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+        # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        status = (username == payload["id"])
+
+        user_info = db.users.find_one({"username": username}, {"_id": False})
+        return render_template('user.html', user_info=user_info, status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+@app.route('/api/boards/<username>')
+def get_user_post(username):
+    # 쿠키에서 토큰 가져오기
+    token_receive = request.cookies.get('mytoken')
+    try:
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
+        if user_info is None:
+            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+        # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        status = (username == payload["id"])
+        # 해당 아이디의 게시물들을 불러와서 전달
+        posts = list(db.boards.find({"memberId": username}).sort("modifiedDate", -1))
+        # 게시글 삭제를 위해 게시글 ObjectId 전달
+        for post in posts:
+            post["_id"] = str(post["_id"])
+        return jsonify({'status': status, 'articles': posts})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+@app.route('/update_profile', methods=['POST'])
+def save_img():
+    # 쿠키에서 토큰 가져오기
+    token_receive = request.cookies.get('mytoken')
+    try:
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
+        if user_info is None:
+            return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+        # 받은 데이터 업데이트를 위해 doc 생성
         username = payload["id"]
         name_receive = request.form["name_give"]
         about_receive = request.form["about_give"]
@@ -300,15 +327,17 @@ def save_img():
             "profile_info": about_receive,
             "email": email_receive
         }
+        # 파일명 저장
         if 'file_give' in request.files:
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1].lower()
             # print(extension)
             file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/"+file_path)
+            file.save("./static/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
+        # DB에 데이터 업데이트
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -317,14 +346,18 @@ def save_img():
 
 @app.route('/api/boards/delete', methods=['POST'])
 def delete_post():
+    # 쿠키에서 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # 토큰에 있는 아이디가 DB에 있는 유저인지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
+        user_info = db.users.find_one({"username": payload["id"]}, {'_id': False, 'password': False})
         if user_info is None:
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
         username_receive = request.form["member_id_give"]
-        if username_receive == payload["id"]:  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        # 내 프로필이면 게시글 삭제, 다른 사람 프로필 페이지면 게시글 삭제 실패
+        if username_receive == payload["id"]:
             board_id_receive = ObjectId(request.form['board_id_give'])
             db.boards.delete_one({'_id': board_id_receive})
             return jsonify({'msg': '삭제 완료!'})
