@@ -70,11 +70,11 @@ def get_boards():
 
         for article in articles:
             member_id = article['memberId']
-            user_info = db.users.find_one({"username": payload["id"]}, {'_id':False,'password':False})
-            if user_info is None:
+            user_profile = db.users.find_one({"username":member_id}, {'_id':False,'password':False})
+            if user_profile is None:
                 articles.remove(article)
             else:
-                article['profile_pic_real'] = user_info["profile_pic_real"]
+                article['profile_pic_real'] = user_profile["profile_pic_real"]
 
         return jsonify({'all_article': articles, 'end': now_receive + count ,'count':count, 'state':more_state})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -174,6 +174,7 @@ def user(username):
             return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
         status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
+        user_info = db.users.find_one({"username": username}, {"_id": False})
         return render_template('user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
