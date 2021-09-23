@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-client = MongoClient('54.180.150.139', 27017, username="test", password="test")
+client = MongoClient('localhost', 27017)
 db = client.dbscrum
 
 SECRET_KEY = 'SCRUM'
